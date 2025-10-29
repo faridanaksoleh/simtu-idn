@@ -18,10 +18,21 @@
   @include('partials.header')
 
   <!-- ======= Sidebar ======= -->
-  @include('partials.sidebar')
+  @php
+      $role = auth()->user()->role ?? null;
+  @endphp
+
+  @if ($role === 'admin')
+      @include('partials.sidebar-admin')
+  @elseif ($role === 'koordinator')
+      @include('partials.sidebar-koordinator')
+  @elseif ($role === 'mahasiswa')
+      @include('partials.sidebar-mahasiswa')
+  @endif
+
 
   <main id="main" class="main">
-    @yield('content')
+    {{ $slot }}
   </main>
 
   <!-- ======= Footer ======= -->
