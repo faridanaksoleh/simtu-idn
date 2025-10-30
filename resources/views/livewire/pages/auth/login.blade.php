@@ -57,7 +57,7 @@ new #[Layout('.layouts.guest')] class extends Component
 
             <div class="flex items-center justify-end mt-4">
                 @if (Route::has('password.request'))
-                    <a class="text-sm text-blue-600 hover:text-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-medium" href="{{ route('password.request') }}" wire:navigate>
+                    <a wire:navigate class="text-sm text-blue-600 hover:text-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-medium" href="{{ route('password.request') }}" wire:navigate>
                         {{ __('Lupa password?') }}
                     </a>
                 @endif
@@ -72,7 +72,7 @@ new #[Layout('.layouts.guest')] class extends Component
                 <div class="block mt-4 pt-4 border-t border-gray-200">
                     <p class="text-center text-gray-500 text-sm">
                         Belum punya akun?
-                        <a href="{{ route('register') }}" wire:navigate class="text-blue-600 hover:text-blue-700 font-semibold">
+                        <a wire:navigate href="{{ route('register') }}" wire:navigate class="text-blue-600 hover:text-blue-700 font-semibold">
                             Daftar di sini
                         </a>
                     </p>

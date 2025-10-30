@@ -84,7 +84,7 @@ new #[Layout('.layouts.guest')] class extends Component
             </div>
 
             <div class="flex items-center justify-end mt-4">
-                <a class="text-sm text-blue-600 hover:text-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-medium" href="{{ route('login') }}" wire:navigate>
+                <a wire:navigate class="text-sm text-blue-600 hover:text-blue-700 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 font-medium" href="{{ route('login') }}" wire:navigate>
                     {{ __('Sudah punya akun?') }}
                 </a>
 
@@ -97,7 +97,7 @@ new #[Layout('.layouts.guest')] class extends Component
             <div class="block mt-4 pt-4 border-t border-gray-200">
                 <p class="text-center text-gray-500 text-sm">
                     Sudah punya akun?
-                    <a href="{{ route('login') }}" wire:navigate class="text-blue-600 hover:text-blue-700 font-semibold">
+                    <a wire:navigate href="{{ route('login') }}" wire:navigate class="text-blue-600 hover:text-blue-700 font-semibold">
                         Masuk di sini
                     </a>
                 </p>

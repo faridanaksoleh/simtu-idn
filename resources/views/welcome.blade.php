@@ -34,8 +34,8 @@
                     @if (Route::has('login'))
                         <div class="flex items-center justify-center space-x-4">
                             <a 
-                                href="{{ route('login') }}" 
                                 wire:navigate 
+                                href="{{ route('login') }}" 
                                 class="py-2 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-150 ease-in-out"
                             >
                                 Masuk
@@ -43,8 +43,8 @@
                             
                             @if (Route::has('register'))
                                 <a 
-                                    href="{{ route('register') }}" 
                                     wire:navigate 
+                                    href="{{ route('register') }}" 
                                     class="py-2 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm border border-gray-200 transition duration-150 ease-in-out"
                                 >
                                     Daftar
