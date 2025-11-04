@@ -17,27 +17,6 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('admin.kategori') ? '' : 'collapsed' }}" href="{{ route('admin.kategori') }}">
-        <i class="bi bi-tags"></i>
-        <span>Kategori Tabungan</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('admin.transaksi') ? '' : 'collapsed' }}" href="{{ route('admin.transaksi') }}">
-        <i class="bi bi-cash-stack"></i>
-        <span>Data Transaksi</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('admin.target') ? '' : 'collapsed' }}" href="{{ route('admin.target') }}">
-        <i class="bi bi-bullseye"></i>
-        <span>Target Tabungan</span>
-      </a>
-    </li>
-
     <li class="nav-heading">Akun</li>
     <li class="nav-item">
       <form action="{{ route('logout') }}" method="POST">

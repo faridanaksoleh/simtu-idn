@@ -47,4 +47,15 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+        public function transactions()
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    public function verifiedTransactions()
+    {
+        return $this->hasMany(Transaction::class, 'verified_by');
+    }
+
 }

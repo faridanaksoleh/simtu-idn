@@ -49,9 +49,6 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\DashboardAdmin::class)->name('admin.dashboard');
         Route::get('/users', \App\Livewire\Admin\KelolaUser::class)->name('admin.users');
-        Route::get('/kategori', \App\Livewire\Admin\KategoriTabungan::class)->name('admin.kategori');
-        Route::get('/transaksi', \App\Livewire\Admin\DataTransaksi::class)->name('admin.transaksi');
-        Route::get('/target-tabungan', \App\Livewire\Admin\TargetTabungan::class)->name('admin.target');
     });
 
 

@@ -22,7 +22,7 @@
                                 <i class="bi bi-people"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>120</h6>
+                                <h6>{{ $totalMahasiswa }}</h6>
                                 <span class="text-muted small pt-2">Mahasiswa aktif</span>
                             </div>
                         </div>
@@ -40,8 +40,8 @@
                                 <i class="bi bi-wallet2"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>Rp 87.500.000</h6>
-                                <span class="text-success small pt-1 fw-bold">+12%</span>
+                                <h6>Rp {{ number_format($totalTabungan, 0, ',', '.') }}</h6>
+                                <span class="text-success small pt-1 fw-bold">0%</span>
                                 <span class="text-muted small pt-2 ps-1">dari bulan lalu</span>
                             </div>
                         </div>
@@ -59,7 +59,7 @@
                                 <i class="bi bi-receipt"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>248</h6>
+                                <h6>{{ $totalTransaksi }}</h6>
                                 <span class="text-muted small pt-2">Total transaksi</span>
                             </div>
                         </div>
@@ -77,7 +77,7 @@
                                 <i class="bi bi-graph-up"></i>
                             </div>
                             <div class="ps-3">
-                                <h6>73%</h6>
+                                <h6>{{ $targetTercapai }}%</h6>
                                 <span class="text-muted small pt-2">Dari total target</span>
                             </div>
                         </div>
@@ -103,20 +103,18 @@
                     <div class="card-body">
                         <h5 class="card-title">Aktivitas Terbaru</h5>
                         <div class="activity">
-                            <div class="activity-item d-flex">
-                                <div class="activite-label">10 min</div>
-                                <i class='bi bi-circle-fill activity-badge text-success align-self-start'></i>
-                                <div class="activity-content">
-                                    Mahasiswa <a href="#" class="fw-bold text-dark">Farid</a> menabung Rp 200.000
+                            @foreach ($aktivitasTerbaru as $item)
+                                <div class="activity-item d-flex">
+                                    <div class="activite-label">{{ $item->created_at->diffForHumans() }}</div>
+                                    <i class='bi bi-circle-fill activity-badge 
+                                        {{ $item->type === 'income' ? 'text-success' : 'text-danger' }} align-self-start'></i>
+                                    <div class="activity-content">
+                                        Mahasiswa <b>{{ $item->user->name }}</b>
+                                        {{ $item->type === 'income' ? 'menabung' : 'melakukan pengeluaran' }}
+                                        Rp {{ number_format($item->amount, 0, ',', '.') }}
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="activity-item d-flex">
-                                <div class="activite-label">1 hr</div>
-                                <i class='bi bi-circle-fill activity-badge text-danger align-self-start'></i>
-                                <div class="activity-content">
-                                    Admin menambahkan kategori <a href="#" class="fw-bold text-dark">Umrah 2026</a>
-                                </div>
-                            </div>
+                            @endforeach
                         </div>
                     </div>
                 </div>
@@ -127,24 +125,127 @@
 
 @push('scripts')
 <script>
-    document.addEventListener("livewire:navigated", renderChart);
-    document.addEventListener("DOMContentLoaded", renderChart);
 
-    function renderChart() {
-        if (typeof ApexCharts !== 'undefined') {
-            new ApexCharts(document.querySelector("#reportsChart"), {
-                series: [{
-                    name: 'Total Tabungan',
-                    data: [3100000, 4200000, 3500000, 5000000, 4900000, 6000000]
-                }],
-                chart: { height: 300, type: 'area', toolbar: { show: false } },
-                colors: ['#4154f1'],
-                dataLabels: { enabled: false },
-                stroke: { curve: 'smooth', width: 2 },
-                xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'] },
-                tooltip: { y: { formatter: val => `Rp ${val.toLocaleString()}` } }
-            }).render();
-        }
+// Debug info
+console.log('Script loaded');
+console.log('ApexCharts available:', typeof ApexCharts !== 'undefined');
+console.log('Chart element exists:', document.getElementById('reportsChart') !== null);
+
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded');
+    setTimeout(initializeChart, 100);
+});
+
+document.addEventListener('livewire:load', function() {
+    console.log('Livewire loaded');
+    initializeChart();
+});
+
+document.addEventListener('livewire:navigated', function() {
+    console.log('Livewire navigated');
+    setTimeout(initializeChart, 200);
+});
+
+function initializeChart() {
+    console.log('Initializing chart...');
+    
+    const chartElement = document.getElementById('reportsChart');
+    
+    if (!chartElement) {
+        console.log('Chart element not found, retrying...');
+        setTimeout(initializeChart, 500);
+        return;
     }
+    
+    if (typeof ApexCharts === 'undefined') {
+        console.log('ApexCharts not loaded, retrying...');
+        setTimeout(initializeChart, 500);
+        return;
+    }
+    
+document.addEventListener('livewire:load', function() {
+    initializeChart();
+});
+
+document.addEventListener('livewire:navigated', function() {
+    // Delay sedikit untuk memastikan DOM sudah sepenuhnya ter-render
+    setTimeout(initializeChart, 100);
+});
+
+function initializeChart() {
+    const chartElement = document.getElementById('reportsChart');
+    
+    if (!chartElement) {
+        console.error('Chart element not found!');
+        return;
+    }
+    
+    // Cek jika ApexCharts tersedia
+    if (typeof ApexCharts === 'undefined') {
+        console.error('ApexCharts is not loaded!');
+        // Coba load ulang setelah delay
+        setTimeout(initializeChart, 500);
+        return;
+    }
+    
+    // Hapus chart sebelumnya jika ada
+    if (window.reportsChart) {
+        window.reportsChart.destroy();
+    }
+    
+    const options = {
+        series: [{
+            name: 'Total Tabungan',
+            data: [3100000, 4200000, 3500000, 5000000, 4900000, 6000000]
+        }],
+        chart: {
+            type: 'area',
+            height: 300,
+            toolbar: { show: false },
+            zoom: { enabled: false }
+        },
+        colors: ['#4154f1'],
+        dataLabels: { enabled: false },
+        stroke: {
+            curve: 'smooth',
+            width: 2
+        },
+        fill: {
+            type: 'gradient',
+            gradient: {
+                shadeIntensity: 1,
+                opacityFrom: 0.7,
+                opacityTo: 0.3,
+                stops: [0, 90, 100]
+            }
+        },
+        xaxis: {
+            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun']
+        },
+        yaxis: {
+            labels: {
+                formatter: function(value) {
+                    return 'Rp ' + value.toLocaleString('id-ID');
+                }
+            }
+        },
+        tooltip: {
+            y: {
+                formatter: function(value) {
+                    return 'Rp ' + value.toLocaleString('id-ID');
+                }
+            }
+        }
+    };
+
+    window.reportsChart = new ApexCharts(chartElement, options);
+    window.reportsChart.render();
+    console.log('Chart rendered successfully');
+}
+
+// Fallback jika DOM sudah loaded tapi Livewire belum trigger
+if (document.readyState === 'complete') {
+    setTimeout(initializeChart, 1000);
+}
 </script>
 @endpush
