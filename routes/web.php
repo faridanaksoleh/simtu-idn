@@ -5,9 +5,11 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\Dashboard as AdminDashboard;
 use App\Livewire\Koordinator\Dashboard as KoordinatorDashboard;
 use App\Livewire\Mahasiswa\DashboardMahasiswa;
-use App\Livewire\Mahasiswa\TransaksiMahasiswa;
-use App\Livewire\Mahasiswa\TabunganMahasiswa;
-use App\Livewire\Mahasiswa\KonsultasiMahasiswa;
+use App\Livewire\Mahasiswa\TargetTabungan;
+use App\Livewire\Mahasiswa\Transaksi;
+use App\Livewire\Mahasiswa\Konsultasi;
+use App\Livewire\Mahasiswa\Notifikasi;
+use App\Livewire\Mahasiswa\Profil;
 
 Route::view('/', 'welcome');
 
@@ -57,7 +59,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profil', \App\Livewire\Admin\Profil::class)->name('admin.profil');
     });
 
-
     // KOORDINATOR
     Route::prefix('koordinator')->middleware('role:koordinator')->group(function () {
         Route::get('/dashboard', \App\Livewire\Koordinator\DashboardKoordinator::class)->name('koordinator.dashboard');
@@ -66,12 +67,14 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/catatan-konsultasi', \App\Livewire\Koordinator\CatatanKonsultasi::class)->name('koordinator.catatan-konsultasi');
     });
 
-    // MAHASISWA
+    // MAHASISWA - ✅ DIPERBAIKI
     Route::prefix('mahasiswa')->middleware('role:mahasiswa')->group(function () {
-        Route::get('/dashboard', DashboardMahasiswa::class)->name('mahasiswa.dashboard');
-        Route::get('/transaksi', TransaksiMahasiswa::class)->name('mahasiswa.transaksi');
-        Route::get('/tabungan', TabunganMahasiswa::class)->name('mahasiswa.tabungan');
-        Route::get('/konsultasi', KonsultasiMahasiswa::class)->name('mahasiswa.konsultasi');
+        Route::get('/dashboard', \App\Livewire\Mahasiswa\DashboardMahasiswa::class)->name('mahasiswa.dashboard');
+        Route::get('/target-tabungan', \App\Livewire\Mahasiswa\TargetTabungan::class)->name('mahasiswa.target-tabungan');
+        Route::get('/transaksi', \App\Livewire\Mahasiswa\Transaksi::class)->name('mahasiswa.transaksi');
+        Route::get('/konsultasi', \App\Livewire\Mahasiswa\Konsultasi::class)->name('mahasiswa.konsultasi');
+        Route::get('/notifikasi', \App\Livewire\Mahasiswa\Notifikasi::class)->name('mahasiswa.notifikasi');
+        Route::get('/profil', \App\Livewire\Mahasiswa\Profil::class)->name('mahasiswa.profil');
     });
 });
 

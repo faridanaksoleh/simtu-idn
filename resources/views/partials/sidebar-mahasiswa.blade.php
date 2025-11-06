@@ -5,37 +5,48 @@
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.dashboard') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.dashboard') }}">
         <i class="bi bi-speedometer2"></i>
-        <span>Dashboard Mahasiswa</span>
+        <span>Dashboard</span>
       </a>
     </li>
 
     <li class="nav-heading">Tabungan Saya</li>
 
-    <!-- Riwayat Transaksi -->
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.target-tabungan') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.target-tabungan') }}">
+        <i class="bi bi-coin"></i> <!-- icon yang cocok sama menu targer tabungan -->
+        <span>Target Tabungan</span>
+      </a>
+    </li>
+
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.transaksi') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.transaksi') }}">
-        <i class="bi bi-wallet2"></i>
-        <span>Riwayat Transaksi</span>
+        <i class="bi bi-credit-card-2-front"></i> <!-- icon yang cocok sama menu transaksi -->
+        <span>Transaksi</span>
       </a>
     </li>
 
-    <!-- Target Umrah -->
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.tabungan') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.tabungan') }}">
-        <i class="bi bi-bullseye"></i>
-        <span>Target Umrah</span>
-      </a>
-    </li>
-
-    <!-- Konsultasi -->
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.konsultasi') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.konsultasi') }}">
-        <i class="bi bi-chat-dots"></i>
+        <i class="bi bi-chat-left-dots"></i>
         <span>Konsultasi</span>
       </a>
     </li>
 
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.notifikasi') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.notifikasi') }}">
+        <i class="bi bi-bell"></i>
+        <span>Notifikasi</span>
+      </a>
+    </li>
+
     <li class="nav-heading">Akun</li>
+
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.profil') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.profil') }}">
+        <i class="bi bi-person"></i>
+        <span>Profil</span>
+      </a>
+    </li>
 
     <!-- Logout -->
     <li class="nav-item">

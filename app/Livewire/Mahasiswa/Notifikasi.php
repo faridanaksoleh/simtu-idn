@@ -4,11 +4,11 @@ namespace App\Livewire\Mahasiswa;
 
 use Livewire\Component;
 
-class TabunganMahasiswa extends Component
+class Notifikasi extends Component
 {
     public function render()
     {
-        return view('livewire.mahasiswa.tabungan-mahasiswa')
+        return view('livewire.mahasiswa.notifikasi')
             ->layout('layouts.app');
     }
 }
