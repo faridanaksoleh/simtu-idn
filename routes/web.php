@@ -49,6 +49,12 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('admin')->middleware('role:admin')->group(function () {
         Route::get('/dashboard', \App\Livewire\Admin\DashboardAdmin::class)->name('admin.dashboard');
         Route::get('/users', \App\Livewire\Admin\KelolaUser::class)->name('admin.users');
+        Route::get('/kategori', \App\Livewire\Admin\KelolaKategori::class)->name('admin.kategori');
+        Route::get('/semua-transaksi', \App\Livewire\Admin\SemuaTransaksi::class)->name('admin.semua-transaksi');
+        Route::get('/persetujuan-transaksi', \App\Livewire\Admin\PersetujuanTransaksi::class)->name('admin.persetujuan-transaksi');
+        Route::get('/laporan-keuangan', \App\Livewire\Admin\LaporanKeuangan::class)->name('admin.laporan-keuangan');
+        Route::get('/notifikasi', \App\Livewire\Admin\Notifikasi::class)->name('admin.notifikasi');
+        Route::get('/profil', \App\Livewire\Admin\Profil::class)->name('admin.profil');
     });
 
 
