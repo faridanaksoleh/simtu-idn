@@ -8,30 +8,53 @@
       </a>
     </li>
 
-    <li class="nav-heading">Data & Laporan</li>
+    <li class="nav-heading">Manajemen Data</li>
 
     <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.data-mahasiswa') ? '' : 'collapsed' }}" href="{{ route('koordinator.data-mahasiswa') }}">
-        <i class="bi bi-people"></i>
-        <span>Data Mahasiswa</span>
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.progress-mahasiswa') ? '' : 'collapsed' }}" href="{{ route('koordinator.progress-mahasiswa') }}">
+        <i class="bi bi-person-lines-fill"></i>
+        <span>Progress Mahasiswa</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.laporan-tabungan') ? '' : 'collapsed' }}" href="{{ route('koordinator.laporan-tabungan') }}">
-        <i class="bi bi-cash-stack"></i>
-        <span>Laporan Tabungan</span>
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.persetujuan-transaksi') ? '' : 'collapsed' }}" href="{{ route('koordinator.persetujuan-transaksi') }}">
+        <i class="bi bi-check-circle"></i>
+        <span>Persetujuan Transaksi</span>
       </a>
     </li>
 
     <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.catatan-konsultasi') ? '' : 'collapsed' }}" href="{{ route('koordinator.catatan-konsultasi') }}">
-        <i class="bi bi-chat-left-text"></i>
-        <span>Catatan Konsultasi</span>
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.riwayat-transaksi') ? '' : 'collapsed' }}" href="{{ route('koordinator.riwayat-transaksi') }}">
+        <i class="bi bi-clock-history"></i>
+        <span>Riwayat Transaksi</span>
       </a>
     </li>
 
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.konsultasi-mahasiswa') ? '' : 'collapsed' }}" href="{{ route('koordinator.konsultasi-mahasiswa') }}">
+        <i class="bi bi-chat-dots"></i>
+        <span>Konsultasi Mahasiswa</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.laporan-keuangan') ? '' : 'collapsed' }}" href="{{ route('koordinator.laporan-keuangan') }}">
+        <i class="bi bi-graph-up"></i>
+        <span>Laporan Keuangan</span>
+      </a>
+    </li>
+
+    
     <li class="nav-heading">Akun</li>
+    
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.profil') ? '' : 'collapsed' }}" href="{{ route('koordinator.profil') }}">
+        <i class="bi bi-person"></i>
+        <span>Profil</span>
+      </a>
+    </li>
+
     <li class="nav-item">
       <form action="{{ route('logout') }}" method="POST">
         @csrf

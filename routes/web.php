@@ -10,6 +10,12 @@ use App\Livewire\Mahasiswa\Transaksi;
 use App\Livewire\Mahasiswa\Konsultasi;
 use App\Livewire\Mahasiswa\Notifikasi;
 use App\Livewire\Mahasiswa\Profil;
+use App\Livewire\Koordinator\PersetujuanTransaksi;
+use App\Livewire\Koordinator\RiwayatTransaksi;
+use App\Livewire\Koordinator\KonsultasiMahasiswa;
+use App\Livewire\Koordinator\ProgressMahasiswa;
+use App\Livewire\Koordinator\LaporanKeuangan;
+use App\Livewire\Koordinator\Profil as KoordinatorProfil;
 
 Route::view('/', 'welcome');
 
@@ -59,15 +65,17 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/profil', \App\Livewire\Admin\Profil::class)->name('admin.profil');
     });
 
-    // KOORDINATOR
     Route::prefix('koordinator')->middleware('role:koordinator')->group(function () {
         Route::get('/dashboard', \App\Livewire\Koordinator\DashboardKoordinator::class)->name('koordinator.dashboard');
-        Route::get('/data-mahasiswa', \App\Livewire\Koordinator\DataMahasiswa::class)->name('koordinator.data-mahasiswa');
-        Route::get('/laporan-tabungan', \App\Livewire\Koordinator\LaporanTabungan::class)->name('koordinator.laporan-tabungan');
-        Route::get('/catatan-konsultasi', \App\Livewire\Koordinator\CatatanKonsultasi::class)->name('koordinator.catatan-konsultasi');
+        Route::get('/progress-mahasiswa', \App\Livewire\Koordinator\ProgressMahasiswa::class)->name('koordinator.progress-mahasiswa');
+        Route::get('/persetujuan-transaksi', \App\Livewire\Koordinator\PersetujuanTransaksi::class)->name('koordinator.persetujuan-transaksi');
+        Route::get('/riwayat-transaksi', \App\Livewire\Koordinator\RiwayatTransaksi::class)->name('koordinator.riwayat-transaksi');
+        Route::get('/konsultasi-mahasiswa', \App\Livewire\Koordinator\KonsultasiMahasiswa::class)->name('koordinator.konsultasi-mahasiswa');
+        Route::get('/laporan-keuangan', \App\Livewire\Koordinator\LaporanKeuangan::class)->name('koordinator.laporan-keuangan');
+        Route::get('/profil', \App\Livewire\Koordinator\Profil::class)->name('koordinator.profil');
     });
 
-    // MAHASISWA - ✅ DIPERBAIKI
+    // MAHASISWA
     Route::prefix('mahasiswa')->middleware('role:mahasiswa')->group(function () {
         Route::get('/dashboard', \App\Livewire\Mahasiswa\DashboardMahasiswa::class)->name('mahasiswa.dashboard');
         Route::get('/target-tabungan', \App\Livewire\Mahasiswa\TargetTabungan::class)->name('mahasiswa.target-tabungan');

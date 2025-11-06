@@ -4,11 +4,11 @@ namespace App\Livewire\Koordinator;
 
 use Livewire\Component;
 
-class DataMahasiswa extends Component
+class RiwayatTransaksi extends Component
 {
     public function render()
     {
-        return view('livewire.koordinator.data-mahasiswa')
+        return view('livewire.koordinator.riwayat-transaksi')
             ->layout('layouts.app');
     }
 }

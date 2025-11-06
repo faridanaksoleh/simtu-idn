@@ -4,11 +4,11 @@ namespace App\Livewire\Koordinator;
 
 use Livewire\Component;
 
-class LaporanTabungan extends Component
+class Profil extends Component
 {
     public function render()
     {
-        return view('livewire.koordinator.laporan-tabungan')
+        return view('livewire.koordinator.profil')
             ->layout('layouts.app');
     }
 }

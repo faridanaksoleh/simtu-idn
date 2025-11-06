@@ -52,6 +52,9 @@
       </a>
     </li>
 
+    
+    <li class="nav-heading">Akun</li>
+    
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('admin.profil') ? '' : 'collapsed' }}" href="{{ route('admin.profil') }}">
         <i class="bi bi-person"></i>
@@ -59,7 +62,6 @@
       </a>
     </li>
 
-    <li class="nav-heading">Akun</li>
     <li class="nav-item">
       <form action="{{ route('logout') }}" method="POST">
         @csrf

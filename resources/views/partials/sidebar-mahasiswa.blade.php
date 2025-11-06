@@ -39,6 +39,9 @@
       </a>
     </li>
 
+  
+
+    <!-- Logout -->
     <li class="nav-heading">Akun</li>
 
     <li class="nav-item">
@@ -47,8 +50,7 @@
         <span>Profil</span>
       </a>
     </li>
-
-    <!-- Logout -->
+    
     <li class="nav-item">
       <form action="{{ route('logout') }}" method="POST">
         @csrf
