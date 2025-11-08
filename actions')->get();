@@ -1,0 +1,22 @@
+[90m= [39m[34;4mPDO[39;24m {#5671
+    [34minTransaction[39m: [36mfalse[39m,
+    [34mattributes[39m: {
+      [34mCASE[39m: [36mNATURAL[39m,
+      [34mERRMODE[39m: [36mEXCEPTION[39m,
+      [34mAUTOCOMMIT[39m: [35m1[39m,
+      [34mPERSISTENT[39m: [36mfalse[39m,
+      [34mDRIVER_NAME[39m: "[32mmysql[39m",
+      [34mSERVER_INFO[39m: "[32mUptime: 164881  Threads: 8  Questions: 41882  Slow queries: 0  Opens: 54  Flush tables: 1  Open tables: 47  Queries per second avg: 0.254[39m",
+      [34mORACLE_NULLS[39m: [36mNATURAL[39m,
+      [34mCLIENT_VERSION[39m: "[32mmysqlnd 8.3.6[39m",
+      [34mSERVER_VERSION[39m: "[32m10.4.32-MariaDB[39m",
+      [34mSTATEMENT_CLASS[39m: [
+        "[32mPDOStatement[39m",
+      ],
+      [34mEMULATE_PREPARES[39m: [35m0[39m,
+      [34mCONNECTION_STATUS[39m: "[32m127.0.0.1 via TCP/IP[39m",
+      [34mSTRINGIFY_FETCHES[39m: [36mfalse[39m,
+      [34mDEFAULT_FETCH_MODE[39m: [36mBOTH[39m,
+    },
+  }
+
