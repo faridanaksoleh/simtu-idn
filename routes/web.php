@@ -19,6 +19,7 @@ use App\Livewire\Koordinator\DashboardKoordinator;
 use App\Livewire\Koordinator\ProgressMahasiswa;
 use App\Livewire\Koordinator\PersetujuanTransaksi;
 use App\Livewire\Koordinator\KonsultasiMahasiswa;
+use App\Livewire\Koordinator\KoordinatorTransaksi;
 use App\Livewire\Koordinator\LaporanKeuangan;
 use App\Livewire\Koordinator\Profil as KoordinatorProfil;
 
@@ -85,6 +86,7 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('koordinator')->middleware('role:koordinator')->group(function () {
         Route::get('/dashboard', DashboardKoordinator::class)->name('koordinator.dashboard');
         Route::get('/progress-mahasiswa', ProgressMahasiswa::class)->name('koordinator.progress-mahasiswa');
+        Route::get('/koordinator-transaksi', KoordinatorTransaksi::class)->name('koordinator.koordinator-transaksi');
         Route::get('/persetujuan-transaksi', PersetujuanTransaksi::class)->name('koordinator.persetujuan-transaksi');
         Route::get('/riwayat-transaksi', RiwayatTransaksi::class)->name('koordinator.riwayat-transaksi');
         Route::get('/konsultasi-mahasiswa', KonsultasiMahasiswa::class)->name('koordinator.konsultasi-mahasiswa');

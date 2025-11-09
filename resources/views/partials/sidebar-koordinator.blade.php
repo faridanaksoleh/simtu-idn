@@ -18,16 +18,9 @@
     </li>
 
     <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.persetujuan-transaksi') ? '' : 'collapsed' }}" href="{{ route('koordinator.persetujuan-transaksi') }}">
-        <i class="bi bi-check-circle"></i>
-        <span>Persetujuan Transaksi</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.riwayat-transaksi') ? '' : 'collapsed' }}" href="{{ route('koordinator.riwayat-transaksi') }}">
-        <i class="bi bi-clock-history"></i>
-        <span>Riwayat Transaksi</span>
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.koordinator-transaksi') ? '' : 'collapsed' }}" href="{{ route('koordinator.koordinator-transaksi') }}">
+        <i class="bi bi-cash-coin"></i>
+        <span>Transaksi</span>
       </a>
     </li>
 
