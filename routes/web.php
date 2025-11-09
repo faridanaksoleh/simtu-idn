@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Livewire\Admin\DashboardAdmin;
 use App\Livewire\Admin\KelolaUser;
 use App\Livewire\Admin\KelolaKategori;
+use App\Livewire\Admin\AdminTransaksi;
 use App\Livewire\Admin\SemuaTransaksi;
 use App\Livewire\Admin\PersetujuanTransaksi as AdminPersetujuanTransaksi;
 use App\Livewire\Admin\LaporanKeuangan as AdminLaporanKeuangan;
@@ -72,6 +73,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/dashboard', DashboardAdmin::class)->name('admin.dashboard');
         Route::get('/users', KelolaUser::class)->name('admin.users');
         Route::get('/kategori', KelolaKategori::class)->name('admin.kategori');
+        Route::get('/transaksi', AdminTransaksi::class)->name('admin.transaksi');
         Route::get('/semua-transaksi', SemuaTransaksi::class)->name('admin.semua-transaksi');
         Route::get('/persetujuan-transaksi', AdminPersetujuanTransaksi::class)->name('admin.persetujuan-transaksi');
         Route::get('/laporan-keuangan', AdminLaporanKeuangan::class)->name('admin.laporan-keuangan');

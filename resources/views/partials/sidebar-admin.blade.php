@@ -25,16 +25,9 @@
     </li>
 
     <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('admin.semua-transaksi') ? '' : 'collapsed' }}" href="{{ route('admin.semua-transaksi') }}">
-        <i class="bi bi-cash"></i>
-        <span>Semua Transaksi</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('admin.persetujuan-transaksi') ? '' : 'collapsed' }}" href="{{ route('admin.persetujuan-transaksi') }}">
-        <i class="bi bi-check-circle"></i>
-        <span>Persetujuan Transaksi</span>
+      <a wire:navigate class="nav-link {{ request()->routeIs('admin.transaksi') ? '' : 'collapsed' }}" href="{{ route('admin.transaksi') }}">
+        <i class="bi bi-cash-coin"></i>
+        <span>Transaksi</span>
       </a>
     </li>
 
