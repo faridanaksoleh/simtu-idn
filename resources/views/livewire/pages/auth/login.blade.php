@@ -24,7 +24,9 @@ new #[Layout('.layouts.guest')] class extends Component
     <div class="w-full sm:max-w-md bg-white shadow-xl rounded-2xl p-6 border border-gray-100">
         
         <div class="flex flex-col items-center mb-4">
-            <img src="{{ asset('assets/img/logo.png') }}" alt="Logo SIMTU" class="w-16 mb-3">
+            <a href="/" wire:navigate>
+                <img src="{{ asset('assets/img/logo.png') }}" alt="Logo SIMTU" class="w-16 mb-3">
+            </a>
             <h2 class="text-2xl font-semibold text-gray-700">Masuk ke Akun Anda</h2>
             <p class="text-sm text-gray-500 mt-1">Selamat datang kembali di <strong>SIMTU IDN</strong></p>
         </div>

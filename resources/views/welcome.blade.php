@@ -36,7 +36,7 @@
                             <a 
                                 wire:navigate 
                                 href="{{ route('login') }}" 
-                                class="py-2 px-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-150 ease-in-out"
+                                class="py-2 px-6 mr-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg shadow-md transition duration-150 ease-in-out"
                             >
                                 Masuk
                             </a>
@@ -45,7 +45,7 @@
                                 <a 
                                     wire:navigate 
                                     href="{{ route('register') }}" 
-                                    class="py-2 px-6 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm border border-gray-200 transition duration-150 ease-in-out"
+                                    class="py-2 px-6 ml-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg shadow-sm border border-gray-200 transition duration-150 ease-in-out"
                                 >
                                     Daftar
                                 </a>
