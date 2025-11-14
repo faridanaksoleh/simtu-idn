@@ -20,9 +20,14 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'nim', // Tambahkan ini
+        'nim',
         'password',
         'role',
+        'major',      // TAMBAH INI
+        'class',      // TAMBAH INI  
+        'phone',      // TAMBAH INI
+        'photo',      // TAMBAH INI
+        'is_active',  // TAMBAH INI (jika ada di migration)
     ];
 
     /**
@@ -45,10 +50,12 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_active' => 'boolean', // TAMBAH INI jika ada field is_active
+            'last_login' => 'datetime', // TAMBAH INI jika ada field last_login
         ];
     }
 
-        public function transactions()
+    public function transactions()
     {
         return $this->hasMany(Transaction::class);
     }
@@ -57,5 +64,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class, 'verified_by');
     }
-
 }

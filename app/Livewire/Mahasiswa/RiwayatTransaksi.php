@@ -42,7 +42,7 @@ class RiwayatTransaksi extends Component
             $query->where('status', $this->status);
         }
 
-        $transactions = $query->paginate(5);
+        $transactions = $query->paginate(10);
 
         return view('livewire.mahasiswa.riwayat-transaksi', compact('transactions'));
     }
