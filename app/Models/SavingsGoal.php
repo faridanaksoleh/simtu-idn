@@ -11,11 +11,20 @@ class SavingsGoal extends Model
 
     protected $fillable = [
         'user_id',
+        'goal_name',
         'target_amount',
         'current_amount',
-        'title',
+        'start_date',
         'deadline',
         'status',
+    ];
+
+    // ✅ TAMBAH INI: Cast tanggal ke Carbon
+    protected $casts = [
+        'deadline' => 'date',
+        'start_date' => 'date',
+        'target_amount' => 'decimal:2',
+        'current_amount' => 'decimal:2',
     ];
 
     // Relasi ke user
