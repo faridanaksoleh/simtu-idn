@@ -8,9 +8,15 @@
   <!-- Vendor CSS Files -->
   <link href="{{ asset('assets/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/vendor/bootstrap-icons/bootstrap-icons.css') }}" rel="stylesheet">
+  
+  <!-- ApexCharts CSS dari CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.css" rel="stylesheet">
+  
   <link href="{{ asset('assets/css/style.css') }}" rel="stylesheet">
-  <link href="{{ asset('assets/vendor/apexcharts/apexcharts.css') }}" rel="stylesheet">
   @livewireStyles
+
+
+  
 </head>
 
 <body>
@@ -41,8 +47,11 @@
 
   <!-- Vendor JS Files -->
   <script src="{{ asset('assets/vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-  <script src="{{ asset('assets/vendor/apexcharts/apexcharts.min.js') }}"></script> <!-- PASTIKAN INI SEBELUM LIVEWIRE -->
-  <script src="{{ asset('assets/js/main.js') }}"></script>
   @livewireScripts
+  <!-- ApexCharts JS dari CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.35.0/dist/apexcharts.min.js"></script>
+  <script src="{{ asset('assets/js/main.js') }}"></script>
+  
+  @stack('scripts')
 </body>
 </html>
