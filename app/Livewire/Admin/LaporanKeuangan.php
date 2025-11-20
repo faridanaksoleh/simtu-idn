@@ -8,7 +8,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\LaporanKeuanganExport;
+use App\Exports\LaporanKeuanganAdminExport;
 
 class LaporanKeuangan extends Component
 {
@@ -167,7 +167,7 @@ class LaporanKeuangan extends Component
                 })->toArray()
             ]);
 
-            return Excel::download(new LaporanKeuanganExport($data), 'laporan-keuangan-' . now()->format('Y-m-d') . '.xlsx');
+            return Excel::download(new LaporanKeuanganAdminExport($data), 'laporan-keuangan-' . now()->format('Y-m-d') . '.xlsx');
             
         } catch (\Exception $e) {
             $this->dispatch('error', message: 'Error generating Excel: ' . $e->getMessage());

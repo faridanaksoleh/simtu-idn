@@ -33,7 +33,7 @@
 
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.laporan-keuangan') ? '' : 'collapsed' }}" href="{{ route('koordinator.laporan-keuangan') }}">
-        <i class="bi bi-graph-up"></i>
+        <i class="bi bi-file-text"></i>
         <span>Laporan Keuangan</span>
       </a>
     </li>

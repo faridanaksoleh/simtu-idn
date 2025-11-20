@@ -11,7 +11,7 @@ use Maatwebsite\Excel\Events\AfterSheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Carbon\Carbon;
 
-class LaporanKeuanganExport implements FromArray, WithHeadings, WithTitle, WithStyles, WithEvents
+class LaporanKeuanganAdminExport implements FromArray, WithHeadings, WithTitle, WithStyles, WithEvents
 {
     protected $data;
 
