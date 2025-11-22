@@ -64,4 +64,27 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class, 'verified_by');
     }
+
+    // TAMBAHKAN RELATIONSHIP UNTUK KONSULTASI
+    public function sentConsultations()
+    {
+        return $this->hasMany(ConsultationNote::class, 'student_id');
+    }
+
+    public function receivedConsultations()
+    {
+        return $this->hasMany(ConsultationNote::class, 'coordinator_id');
+    }
+
+    // Helper method untuk mengecek apakah user adalah koordinator
+    public function isCoordinator()
+    {
+        return $this->role === 'koordinator';
+    }
+
+    // Helper method untuk mengecek apakah user adalah mahasiswa
+    public function isMahasiswa()
+    {
+        return $this->role === 'mahasiswa';
+    }
 }
