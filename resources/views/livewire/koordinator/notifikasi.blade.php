@@ -2,7 +2,7 @@
     <div class="card">
         <div class="card-body">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="card-title mb-0">Notifikasi Saya</h4>
+                <h4 class="card-title mb-0">Notifikasi Koordinator</h4>
                 @if($notifications->where('is_read', false)->count() > 0)
                     <button wire:click="markAllAsRead" class="btn btn-primary btn-sm">
                         <i class="bi bi-check-all me-1"></i>Tandai Semua Dibaca

@@ -11,13 +11,6 @@
     <li class="nav-heading">Manajemen Data</li>
 
     <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.progress-mahasiswa') ? '' : 'collapsed' }}" href="{{ route('koordinator.progress-mahasiswa') }}">
-        <i class="bi bi-person-lines-fill"></i>
-        <span>Progress Mahasiswa</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.koordinator-transaksi') ? '' : 'collapsed' }}" href="{{ route('koordinator.koordinator-transaksi') }}">
         <i class="bi bi-cash-coin"></i>
         <span>Transaksi</span>
@@ -26,8 +19,15 @@
 
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.konsultasi-mahasiswa') ? '' : 'collapsed' }}" href="{{ route('koordinator.konsultasi-mahasiswa') }}">
-        <i class="bi bi-chat-dots"></i>
-        <span>Konsultasi Mahasiswa</span>
+        <i class="bi bi-chat-left-dots"></i>
+        <span>Konsultasi</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a wire:navigate class="nav-link {{ request()->routeIs('koordinator.progress-mahasiswa') ? '' : 'collapsed' }}" href="{{ route('koordinator.progress-mahasiswa') }}">
+        <i class="bi bi-person-lines-fill"></i>
+        <span>Progress Mahasiswa</span>
       </a>
     </li>
 
@@ -38,7 +38,6 @@
       </a>
     </li>
 
-    
     <li class="nav-heading">Akun</li>
     
     <li class="nav-item">

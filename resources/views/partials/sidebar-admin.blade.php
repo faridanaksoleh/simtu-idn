@@ -38,13 +38,6 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('admin.notifikasi') ? '' : 'collapsed' }}" href="{{ route('admin.notifikasi') }}">
-        <i class="bi bi-bell"></i>
-        <span>Notifikasi</span>
-      </a>
-    </li>
-
     
     <li class="nav-heading">Akun</li>
     

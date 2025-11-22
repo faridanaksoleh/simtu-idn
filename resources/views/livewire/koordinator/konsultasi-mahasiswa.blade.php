@@ -28,7 +28,7 @@
 
     <!-- Summary Cards -->
     <div class="row">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
             <div class="card info-card sales-card">
                 <div class="card-body">
                     <h5 class="card-title">Total</h5>
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
             <div class="card info-card revenue-card">
                 <div class="card-body">
                     <h5 class="card-title">Menunggu</h5>
@@ -62,34 +62,17 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="col-xl-4 col-md-6">
             <div class="card info-card customers-card">
                 <div class="card-body">
-                    <h5 class="card-title">Dibalas</h5>
+                    <h5 class="card-title">Sudah Dibalas</h5>
                     <div class="d-flex align-items-center">
                         <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
                             <i class="bi bi-check-circle text-success"></i>
                         </div>
                         <div class="ps-3">
                             <h6>{{ $stats['replied'] }}</h6>
-                            <span class="text-success small pt-1 fw-bold">Sudah Dibalas</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-xl-3 col-md-6">
-            <div class="card info-card customers-card">
-                <div class="card-body">
-                    <h5 class="card-title">Selesai</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-archive text-secondary"></i>
-                        </div>
-                        <div class="ps-3">
-                            <h6>{{ $stats['closed'] }}</h6>
-                            <span class="text-secondary small pt-1 fw-bold">Ditutup</span>
+                            <span class="text-success small pt-1 fw-bold">Selesai</span>
                         </div>
                     </div>
                 </div>
@@ -113,7 +96,6 @@
                         <option value="all">Semua Status</option>
                         <option value="pending">Menunggu Balasan</option>
                         <option value="replied">Sudah Dibalas</option>
-                        <option value="closed">Selesai</option>
                     </select>
                 </div>
                 <div class="col-md-2">
@@ -156,18 +138,31 @@
                                         <small class="{{ $selectedConsultation && $selectedConsultation->id === $consultation->id ? 'text-light' : 'text-muted' }}">
                                             {{ $consultation->student->name }}
                                         </small>
-                                        <span class="badge bg-{{ $consultation->status === 'pending' ? 'warning' : ($consultation->status === 'replied' ? 'success' : 'secondary') }}">
-                                            {{ $consultation->status === 'pending' ? 'Menunggu' : ($consultation->status === 'replied' ? 'Dibalas' : 'Selesai') }}
+                                        <span class="badge bg-{{ $consultation->status === 'pending' ? 'warning' : 'success' }}">
+                                            {{ $consultation->status === 'pending' ? 'Menunggu' : 'Sudah Dibalas' }}
                                         </span>
                                     </div>
                                 </a>
                             @endforeach
                         </div>
 
-                        <!-- Pagination -->
-                        <div class="mt-3">
-                            {{ $consultations->links() }}
+                        <!-- 🔥 PERBAIKI PAGINATION -->
+                        @if($consultations->hasPages())
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <div class="text-muted small">
+                                Menampilkan {{ $consultations->firstItem() ?? 0 }} - {{ $consultations->lastItem() ?? 0 }} 
+                                dari {{ $consultations->total() }} konsultasi
+                            </div>
+                            <div>
+                                {{ $consultations->links('pagination::bootstrap-5') }}
+                            </div>
                         </div>
+                        @else
+                        <div class="text-center text-muted small mt-3">
+                            Total {{ $consultations->total() }} konsultasi
+                        </div>
+                        @endif
+
                     @else
                         <div class="text-center py-5">
                             <i class="bi bi-chat-dots display-1 text-muted"></i>
@@ -212,8 +207,8 @@
                                         Dari: {{ $selectedConsultation->student->name }} ({{ $selectedConsultation->student->class }})
                                     </small>
                                 </div>
-                                <span class="badge bg-{{ $selectedConsultation->status === 'pending' ? 'warning' : ($selectedConsultation->status === 'replied' ? 'success' : 'secondary') }}">
-                                    {{ $selectedConsultation->status === 'pending' ? 'Menunggu Balasan' : ($selectedConsultation->status === 'replied' ? 'Sudah Dibalas' : 'Selesai') }}
+                                <span class="badge bg-{{ $selectedConsultation->status === 'pending' ? 'warning' : 'success' }}">
+                                    {{ $selectedConsultation->status === 'pending' ? 'Menunggu Balasan' : 'Sudah Dibalas' }}
                                 </span>
                             </div>
                             <p class="mb-2">{{ $selectedConsultation->message }}</p>
@@ -247,23 +242,17 @@
                                                   wire:model="replyMessage"></textarea>
                                         @error('replyMessage') <span class="text-danger small">{{ $message }}</span> @enderror
                                     </div>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-grid">
                                         <button type="submit" class="btn btn-success">
                                             <i class="bi bi-send me-1"></i>Kirim Balasan
-                                        </button>
-                                        <button type="button" class="btn btn-outline-secondary" 
-                                                wire:click="markAsClosed({{ $selectedConsultation->id }})">
-                                            <i class="bi bi-archive me-1"></i>Tandai Selesai
                                         </button>
                                     </div>
                                 </form>
                             </div>
                         @elseif($selectedConsultation->status === 'replied')
-                            <div class="text-center">
-                                <button type="button" class="btn btn-outline-secondary" 
-                                        wire:click="markAsClosed({{ $selectedConsultation->id }})">
-                                    <i class="bi bi-archive me-1"></i>Tandai sebagai Selesai
-                                </button>
+                            <div class="alert alert-success">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Konsultasi ini sudah dibalas. Mahasiswa dapat melihat jawaban kapan saja.
                             </div>
                         @endif
                     </div>

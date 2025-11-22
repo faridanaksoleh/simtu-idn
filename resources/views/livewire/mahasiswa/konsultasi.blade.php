@@ -97,10 +97,8 @@
                                         <td>
                                             @if($consultation->status === 'pending')
                                                 <span class="badge bg-warning">Menunggu</span>
-                                            @elseif($consultation->status === 'replied')
-                                                <span class="badge bg-success">Dibalas</span>
                                             @else
-                                                <span class="badge bg-secondary">Ditutup</span>
+                                                <span class="badge bg-success">Sudah Dibalas</span>
                                             @endif
                                         </td>
                                         <td>
@@ -124,15 +122,12 @@
                                                         <i class="bi bi-trash"></i>
                                                     </button>
                                                 </div>
-                                            @elseif($consultation->status === 'replied')
+                                            @else
                                                 <button class="btn btn-sm btn-outline-info" 
                                                         wire:click="showDetail({{ $consultation->id }})"
                                                         title="Lihat Balasan">
-                                                    <i class="bi bi-eye"></i> Lihat
+                                                    <i class="bi bi-eye"></i> Lihat Jawaban
                                                 </button>
-                                            @else
-                                                <!-- Status closed - tidak ada action -->
-                                                <span class="text-muted small">-</span>
                                             @endif
                                         </td>
                                     </tr>
@@ -141,10 +136,23 @@
                         </table>
                     </div>
 
-                    <!-- Pagination -->
-                    <div class="mt-3">
-                        {{ $consultations->links() }}
+                    <!-- 🔥 PERBAIKI PAGINATION -->
+                    @if($consultations->hasPages())
+                    <div class="d-flex justify-content-between align-items-center mt-4">
+                        <div class="text-muted small">
+                            Menampilkan {{ $consultations->firstItem() ?? 0 }} - {{ $consultations->lastItem() ?? 0 }} 
+                            dari {{ $consultations->total() }} konsultasi
+                        </div>
+                        <div>
+                            {{ $consultations->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
+                    @else
+                    <div class="text-center text-muted small mt-3">
+                        Total {{ $consultations->total() }} konsultasi
+                    </div>
+                    @endif
+
                 @else
                     <div class="text-center py-5">
                         <i class="bi bi-chat-dots display-1 text-muted"></i>
@@ -174,7 +182,9 @@
                                             Koordinator: {{ $selectedConsultation->coordinator->name ?? 'Belum ditugaskan' }}
                                         </small>
                                     </div>
-                                    <span class="badge bg-success">Dibalas</span>
+                                    <span class="badge bg-{{ $selectedConsultation->status === 'pending' ? 'warning' : 'success' }}">
+                                        {{ $selectedConsultation->status === 'pending' ? 'Menunggu' : 'Sudah Dibalas' }}
+                                    </span>
                                 </div>
                                 <p class="mb-2"><strong>Pertanyaan Anda:</strong><br>{{ $selectedConsultation->message }}</p>
                                 <small class="text-muted">
@@ -192,6 +202,11 @@
                                     <small class="text-muted">
                                         Dibalas: {{ $selectedConsultation->updated_at->format('d F Y H:i') }}
                                     </small>
+                                </div>
+                            @else
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-clock-history me-2"></i>
+                                    Koordinator belum membalas konsultasi ini.
                                 </div>
                             @endif
                         </div>

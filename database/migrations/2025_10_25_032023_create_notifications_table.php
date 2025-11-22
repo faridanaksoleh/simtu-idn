@@ -15,6 +15,7 @@ return new class extends Migration
             $table->text('message');
             $table->enum('type', ['success', 'warning', 'info', 'danger'])->default('info');
             $table->foreignId('related_transaction_id')->nullable()->constrained('transactions')->nullOnDelete();
+            $table->foreignId('related_consultation_id')->nullable()->constrained('consultation_notes')->nullOnDelete(); // TAMBAH INI
             $table->boolean('is_read')->default(false);
             $table->timestamp('read_at')->nullable();
             $table->timestamps();

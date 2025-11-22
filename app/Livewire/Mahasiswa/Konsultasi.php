@@ -54,7 +54,7 @@ class Konsultasi extends Component
             $this->reset(['subject', 'message']);
             
             $this->dispatch('showSuccess', [
-                'message' => 'Pertanyaan berhasil dikirim!'
+                'message' => 'Pertanyaan berhasil dikirim! Anda bisa melihat balasan di riwayat konsultasi.'
             ]);
             
         } catch (\Exception $e) {

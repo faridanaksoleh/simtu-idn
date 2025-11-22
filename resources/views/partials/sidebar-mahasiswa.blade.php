@@ -13,14 +13,14 @@
 
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.target-tabungan') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.target-tabungan') }}">
-        <i class="bi bi-coin"></i> <!-- icon yang cocok sama menu targer tabungan -->
+        <i class="bi bi-coin"></i> 
         <span>Target Tabungan</span>
       </a>
     </li>
 
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.transaksi') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.transaksi') }}">
-        <i class="bi bi-credit-card-2-front"></i> <!-- icon yang cocok sama menu transaksi -->
+        <i class="bi bi-credit-card-2-front"></i> 
         <span>Transaksi</span>
       </a>
     </li>
@@ -32,14 +32,6 @@
       </a>
     </li>
 
-    <li class="nav-item">
-      <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.notifikasi') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.notifikasi') }}">
-        <i class="bi bi-bell"></i>
-        <span>Notifikasi</span>
-      </a>
-    </li>
-
-  
 
     <!-- Logout -->
     <li class="nav-heading">Akun</li>

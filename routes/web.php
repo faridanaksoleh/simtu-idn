@@ -21,6 +21,7 @@ use App\Livewire\Koordinator\PersetujuanTransaksi;
 use App\Livewire\Koordinator\KonsultasiMahasiswa;
 use App\Livewire\Koordinator\KoordinatorTransaksi;
 use App\Livewire\Koordinator\LaporanKeuangan;
+use App\Livewire\Koordinator\Notifikasi as KoordinatorNotifikasi;
 use App\Livewire\Koordinator\Profil as KoordinatorProfil;
 
 // Mahasiswa Components
@@ -30,7 +31,7 @@ use App\Livewire\Mahasiswa\Transaksi;
 use App\Livewire\Mahasiswa\BuatTransaksi;
 use App\Livewire\Mahasiswa\RiwayatTransaksi;
 use App\Livewire\Mahasiswa\Konsultasi;
-use App\Livewire\Mahasiswa\Notifikasi;
+use App\Livewire\Mahasiswa\Notifikasi as MahasiswaNotifikasi;
 use App\Livewire\Mahasiswa\Profil as MahasiswaProfil;
 
 Route::view('/', 'welcome');
@@ -80,6 +81,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan-keuangan', AdminLaporanKeuangan::class)->name('admin.laporan-keuangan');
         Route::get('/notifikasi', AdminNotifikasi::class)->name('admin.notifikasi');
         Route::get('/profil', AdminProfil::class)->name('admin.profil');
+        Route::get('/notifikasi', AdminNotifikasi::class)->name('admin.notifikasi');        
     });
 
     // KOORDINATOR - Gunakan imported classes
@@ -91,7 +93,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/riwayat-transaksi', RiwayatTransaksi::class)->name('koordinator.riwayat-transaksi');
         Route::get('/konsultasi-mahasiswa', KonsultasiMahasiswa::class)->name('koordinator.konsultasi-mahasiswa');
         Route::get('/laporan-keuangan', LaporanKeuangan::class)->name('koordinator.laporan-keuangan');
+        Route::get('/notifikasi', KoordinatorNotifikasi::class)->name('koordinator.notifikasi');
         Route::get('/profil', KoordinatorProfil::class)->name('koordinator.profil');
+        Route::get('/notifikasi', KoordinatorNotifikasi::class)->name('koordinator.notifikasi');
     });
 
     // MAHASISWA - Gunakan imported classes
@@ -102,8 +106,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/buat-transaksi', BuatTransaksi::class)->name('mahasiswa.buat-transaksi');
         Route::get('/riwayat-transaksi', RiwayatTransaksi::class)->name('mahasiswa.riwayat-transaksi');
         Route::get('/konsultasi', Konsultasi::class)->name('mahasiswa.konsultasi');
-        Route::get('/notifikasi', Notifikasi::class)->name('mahasiswa.notifikasi');
+        Route::get('/notifikasi', MahasiswaNotifikasi::class)->name('mahasiswa.notifikasi');
         Route::get('/profil', MahasiswaProfil::class)->name('mahasiswa.profil');
+        Route::get('/notifikasi', MahasiswaNotifikasi::class)->name('mahasiswa.notifikasi');
     });
 });
 

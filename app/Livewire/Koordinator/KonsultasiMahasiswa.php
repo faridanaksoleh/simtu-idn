@@ -51,42 +51,26 @@ class KonsultasiMahasiswa extends Component
             $consultation->update([
                 'response' => $this->replyMessage,
                 'status' => 'replied',
-                'coordinator_id' => Auth::id(), // Pastikan coordinator_id terisi
+                'coordinator_id' => Auth::id(),
             ]);
 
-            // Reset form
             $this->reset('replyMessage');
             
-            session()->flash('success', 'Balasan berhasil dikirim!');
+            $this->dispatch('showSuccess', [
+                'message' => 'Balasan berhasil dikirim! Mahasiswa dapat melihat jawaban di riwayat konsultasi.'
+            ]);
             
             // Refresh selected consultation data
             $this->selectConsultation($consultation->id);
             
         } catch (\Exception $e) {
-            session()->flash('error', 'Gagal mengirim balasan: ' . $e->getMessage());
-        }
-    }
-
-    public function markAsClosed($consultationId)
-    {
-        try {
-            $consultation = ConsultationNote::findOrFail($consultationId);
-            
-            $consultation->update([
-                'status' => 'closed',
+            $this->dispatch('showError', [
+                'message' => 'Gagal mengirim balasan: ' . $e->getMessage()
             ]);
-
-            session()->flash('success', 'Konsultasi ditandai sebagai selesai!');
-            
-            // Refresh jika yang ditutup adalah yang sedang dilihat
-            if ($this->selectedConsultation && $this->selectedConsultation->id === $consultationId) {
-                $this->selectConsultation($consultationId);
-            }
-            
-        } catch (\Exception $e) {
-            session()->flash('error', 'Gagal menutup konsultasi: ' . $e->getMessage());
         }
     }
+
+    // 🔥 HAPUS METHOD markAsClosed - TIDAK PERLU
 
     public function render()
     {
@@ -118,7 +102,7 @@ class KonsultasiMahasiswa extends Component
         $consultations = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Statistik untuk cards
+        // Statistik untuk cards - HAPUS CLOSED
         $stats = [
             'total' => ConsultationNote::whereHas('student', function($q) {
                 $q->where('class', Auth::user()->class);
@@ -129,9 +113,7 @@ class KonsultasiMahasiswa extends Component
             'replied' => ConsultationNote::whereHas('student', function($q) {
                 $q->where('class', Auth::user()->class);
             })->where('status', 'replied')->count(),
-            'closed' => ConsultationNote::whereHas('student', function($q) {
-                $q->where('class', Auth::user()->class);
-            })->where('status', 'closed')->count(),
+            // 🔥 HAPUS CLOSED COUNTER
         ];
 
         return view('livewire.koordinator.konsultasi-mahasiswa', [
