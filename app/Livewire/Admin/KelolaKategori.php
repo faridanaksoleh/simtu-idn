@@ -9,6 +9,10 @@ class KelolaKategori extends Component
 {
     public $categories, $name, $type, $description, $is_active = true, $category_id;
     public $isEdit = false;
+    public $deleteCategoryId = null;
+
+    // 🔥 TAMBAHKAN LISTENER
+    protected $listeners = ['deleteConfirmed' => 'performDelete'];
 
     public function render()
     {
@@ -24,6 +28,8 @@ class KelolaKategori extends Component
         $this->description = '';
         $this->is_active = true;
         $this->isEdit = false;
+        $this->category_id = null;
+        $this->deleteCategoryId = null;
     }
 
     public function store()
@@ -41,8 +47,12 @@ class KelolaKategori extends Component
             'is_active' => $this->is_active,
         ]);
 
-        session()->flash('message', 'Kategori berhasil ditambahkan.');
+        $this->dispatch('showSuccess', [
+            'message' => 'Kategori berhasil ditambahkan.'
+        ]);
+
         $this->resetInputFields();
+        $this->dispatch('closeModal');
     }
 
     public function edit($id)
@@ -72,13 +82,54 @@ class KelolaKategori extends Component
             'is_active' => $this->is_active,
         ]);
 
-        session()->flash('message', 'Kategori berhasil diperbarui.');
+        $this->dispatch('showSuccess', [
+            'message' => 'Kategori berhasil diperbarui.'
+        ]);
+
         $this->resetInputFields();
+        $this->dispatch('closeModal');
     }
 
+    // 🔥 METHOD UNTUK SWEETALERT CONFIRMATION
+    public function confirmDelete($id)
+    {
+        $this->deleteCategoryId = $id;
+        $category = Category::findOrFail($id);
+        
+        $this->dispatch('showDeleteConfirmation', [
+            'title' => 'Hapus Kategori?',
+            'text' => "Yakin ingin menghapus kategori {$category->name}?",
+            'confirmText' => 'Ya, Hapus!',
+            'cancelText' => 'Batal',
+            'id' => $id
+        ]);
+    }
+
+    // 🔥 METHOD YANG DIPANGGIL SETELAH KONFIRMASI
+    public function performDelete()
+    {
+        if ($this->deleteCategoryId) {
+            $category = Category::findOrFail($this->deleteCategoryId);
+            $categoryName = $category->name;
+            $category->delete();
+            
+            $this->dispatch('showSuccess', [
+                'message' => "Kategori {$categoryName} berhasil dihapus."
+            ]);
+            
+            $this->deleteCategoryId = null;
+        }
+    }
+
+    // 🔥 FALLBACK METHOD
     public function delete($id)
     {
-        Category::findOrFail($id)->delete();
-        session()->flash('message', 'Kategori berhasil dihapus.');
+        $category = Category::findOrFail($id);
+        $categoryName = $category->name;
+        $category->delete();
+        
+        $this->dispatch('showSuccess', [
+            'message' => "Kategori {$categoryName} berhasil dihapus."
+        ]);
     }
 }
