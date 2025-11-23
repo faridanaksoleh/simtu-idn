@@ -96,24 +96,33 @@
             });
         });
 
-        // Delete confirmation - SIMPLIFIED VERSION
+        // Delete confirmation - FIXED VERSION
         Livewire.on('showDeleteConfirmation', (event) => {
             Swal.fire({
                 title: event.title || 'Hapus Data?',
-                text: event.text || "Anda tidak dapat mengembalikan data ini!",
+                text: event.text || 'Anda yakin ingin menghapus data ini?',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonColor: '#d33',
-                cancelButtonColor: '#3085d6',
                 confirmButtonText: event.confirmText || 'Ya, Hapus!',
                 cancelButtonText: event.cancelText || 'Batal',
-                reverseButtons: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                reverseButtons: true, // 🔥 INI YANG MEMINDAHKAN TOMBOL
                 focusCancel: false
             }).then((result) => {
                 if (result.isConfirmed) {
                     Livewire.dispatch('deleteConfirmed');
                 }
             });
+        });
+
+        // 🔥 HANDLER UNTUK TUTUP MODAL
+        Livewire.on('closeModal', () => {
+            // Tutup modal Bootstrap
+            const modal = bootstrap.Modal.getInstance(document.getElementById('userModal'));
+            if (modal) {
+                modal.hide();
+            }
         });
 
         // General confirmation - SIMPLIFIED VERSION

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\CheckUserStatus;
 
 // Admin Components
 use App\Livewire\Admin\DashboardAdmin;
@@ -12,7 +13,6 @@ use App\Livewire\Admin\BroadcastNotifikasi;
 use App\Livewire\Admin\SemuaTransaksi;
 use App\Livewire\Admin\PersetujuanTransaksi as AdminPersetujuanTransaksi;
 use App\Livewire\Admin\LaporanKeuangan as AdminLaporanKeuangan;
-use App\Livewire\Admin\Notifikasi as AdminNotifikasi;
 use App\Livewire\Admin\Profil as AdminProfil;
 
 // Koordinator Components
@@ -38,12 +38,12 @@ use App\Livewire\Mahasiswa\Profil as MahasiswaProfil;
 Route::view('/', 'welcome');
 
 // ✅ Route utama setelah login
-Route::middleware(['auth'])->get('/dashboard', function () {
+Route::middleware(['auth', 'user.active'])->get('/dashboard', function () { // 🔥 TAMBAH user.active
     return redirect()->route('redirect');
 })->name('dashboard');
 
 Route::view('profile', 'profile')
-    ->middleware(['auth'])
+    ->middleware(['auth', 'user.active']) // 🔥 TAMBAH user.active
     ->name('profile');
 
 require __DIR__.'/auth.php';
@@ -57,7 +57,7 @@ Route::post('/logout', function () {
 })->name('logout');
 
 // ✅ Redirect sesuai role
-Route::middleware(['auth'])->get('/redirect', function () {
+Route::middleware(['auth', 'user.active'])->get('/redirect', function () { // 🔥 TAMBAH user.active
     $user = auth()->user();
 
     return match ($user->role) {
@@ -69,7 +69,7 @@ Route::middleware(['auth'])->get('/redirect', function () {
 })->name('redirect');
 
 // ✅ Grup route per role
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'user.active'])->group(function () { // 🔥 TAMBAH user.active
 
     // ADMIN - Gunakan imported classes
     Route::prefix('admin')->middleware('role:admin')->group(function () {
@@ -113,7 +113,7 @@ Route::middleware(['auth'])->group(function () {
 // ----------------------------------------------------
 // 👇 Tes RoleMiddleware (Optional - untuk development)
 // ----------------------------------------------------
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'user.active'])->group(function () { // 🔥 TAMBAH user.active
     Route::get('/admin-only', fn() => 'Halo, Admin!')->middleware('role:admin');
     Route::get('/koordinator-only', fn() => 'Halo, Koordinator!')->middleware('role:koordinator');
     Route::get('/mahasiswa-only', fn() => 'Halo, Mahasiswa!')->middleware('role:mahasiswa');
