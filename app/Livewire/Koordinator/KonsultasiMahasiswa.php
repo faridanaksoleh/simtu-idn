@@ -54,13 +54,15 @@ class KonsultasiMahasiswa extends Component
                 'coordinator_id' => Auth::id(),
             ]);
 
+            // 🔥 KIRIM NOTIFIKASI KE MAHASISWA
+            \App\Services\NotificationService::notifyConsultationReply($consultation);
+
             $this->reset('replyMessage');
             
             $this->dispatch('showSuccess', [
-                'message' => 'Balasan berhasil dikirim! Mahasiswa dapat melihat jawaban di riwayat konsultasi.'
+                'message' => 'Balasan berhasil dikirim!'
             ]);
             
-            // Refresh selected consultation data
             $this->selectConsultation($consultation->id);
             
         } catch (\Exception $e) {

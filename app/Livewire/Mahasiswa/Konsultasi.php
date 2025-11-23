@@ -43,7 +43,7 @@ class Konsultasi extends Component
                 ->where('class', $user->class)
                 ->first();
 
-            ConsultationNote::create([
+            $consultation = ConsultationNote::create([
                 'student_id' => $user->id,
                 'coordinator_id' => $coordinator?->id,
                 'subject' => $this->subject,
@@ -51,10 +51,13 @@ class Konsultasi extends Component
                 'status' => 'pending',
             ]);
 
+            // 🔥 KIRIM NOTIFIKASI KE KOORDINATOR
+            \App\Services\NotificationService::notifyNewConsultation($consultation);
+
             $this->reset(['subject', 'message']);
             
             $this->dispatch('showSuccess', [
-                'message' => 'Pertanyaan berhasil dikirim! Anda bisa melihat balasan di riwayat konsultasi.'
+                'message' => 'Pertanyaan berhasil dikirim!'
             ]);
             
         } catch (\Exception $e) {

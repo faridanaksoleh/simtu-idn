@@ -19,7 +19,6 @@ class Notifikasi extends Component
 
         if ($notification) {
             $notification->markAsRead();
-            $this->dispatch('showSuccess', ['message' => 'Notifikasi ditandai sudah dibaca']);
         }
     }
 
@@ -31,8 +30,6 @@ class Notifikasi extends Component
                 'is_read' => true,
                 'read_at' => now()
             ]);
-
-        $this->dispatch('showSuccess', ['message' => 'Semua notifikasi ditandai sudah dibaca']);
     }
 
     public function render()

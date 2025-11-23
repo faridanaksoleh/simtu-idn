@@ -1,66 +1,64 @@
 <div>
     <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Notifikasi</h5>
+            @if($notifications->where('is_read', false)->count() > 0)
+                <button wire:click="markAllAsRead" class="btn btn-sm btn-primary">
+                    Tandai Semua Dibaca
+                </button>
+            @endif
+        </div>
         <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h4 class="card-title mb-0">Notifikasi Saya</h4>
-                @if($notifications->where('is_read', false)->count() > 0)
-                    <button wire:click="markAllAsRead" class="btn btn-primary btn-sm">
-                        <i class="bi bi-check-all me-1"></i>Tandai Semua Dibaca
-                    </button>
-                @endif
-            </div>
-
-            <div class="list-group">
-                @forelse($notifications as $notification)
-                    <div class="list-group-item list-group-item-action @if(!$notification->is_read) list-group-item-light @endif"
-                         wire:click="markAsRead({{ $notification->id }})"
-                         style="cursor: pointer;">
+            @forelse($notifications as $notification)
+                <div class="border-bottom pb-3 mb-3 @if(!$notification->is_read) bg-light rounded p-3 @endif"
+                     wire:click="markAsRead({{ $notification->id }})"
+                     style="cursor: pointer;">
+                    
+                    <div class="d-flex align-items-start">
+                        @php
+                            $icons = [
+                                'success' => 'check-circle',
+                                'warning' => 'exclamation-circle', 
+                                'danger' => 'x-circle',
+                                'info' => 'info-circle'
+                            ];
+                            $icon = $icons[$notification->type] ?? 'info-circle';
+                            $color = $notification->type ?? 'info';
+                        @endphp
                         
-                        <div class="d-flex w-100 justify-content-between">
-                            <h5 class="mb-1">
-                                @php
-                                    $icons = [
-                                        'success' => 'check-circle-fill text-success',
-                                        'warning' => 'exclamation-circle-fill text-warning',
-                                        'danger' => 'x-circle-fill text-danger', 
-                                        'info' => 'info-circle-fill text-info'
-                                    ];
-                                    $iconClass = $icons[$notification->type] ?? 'info-circle-fill text-info';
-                                @endphp
-                                
-                                <i class="bi bi-{{ $iconClass }} me-2"></i>
-                                {{ $notification->title }}
-                            </h5>
+                        <i class="bi bi-{{ $icon }} text-{{ $color }} me-3 mt-1"></i>
+                        <div class="flex-grow-1">
+                            <h6 class="mb-1">{{ $notification->title }}</h6>
+                            <p class="mb-1 text-muted">{{ $notification->message }}</p>
                             <small class="text-muted">{{ $notification->created_at->diffForHumans() }}</small>
                         </div>
-                        
-                        <p class="mb-1">{{ $notification->message }}</p>
-                        
-                        @if($notification->consultation)
-                            <small class="text-primary">
-                                <i class="bi bi-chat-dots me-1"></i>
-                                Konsultasi: {{ $notification->consultation->subject }}
-                            </small>
-                        @endif
-                        
                         @if(!$notification->is_read)
-                            <span class="badge bg-primary float-end">Baru</span>
+                            <span class="badge bg-primary ms-2">Baru</span>
                         @endif
                     </div>
-                @empty
-                    <div class="text-center py-5">
-                        <i class="bi bi-bell-slash display-1 text-muted"></i>
-                        <h5 class="text-muted mt-3">Tidak ada notifikasi</h5>
-                        <p class="text-muted">Notifikasi akan muncul di sini ketika ada aktivitas baru</p>
-                    </div>
-                @endforelse
-            </div>
-
-            <!-- Pagination -->
-            @if($notifications->hasPages())
-                <div class="mt-4">
-                    {{ $notifications->links() }}
                 </div>
+            @empty
+                <div class="text-center py-5">
+                    <i class="bi bi-bell-slash display-4 text-muted"></i>
+                    <p class="mt-3 text-muted">Tidak ada notifikasi</p>
+                </div>
+            @endforelse
+
+            <!-- 🔥 FIX: Pagination yang benar -->
+            @if($notifications->hasPages())
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <div class="text-muted small">
+                    Menampilkan {{ $notifications->firstItem() ?? 0 }} - {{ $notifications->lastItem() ?? 0 }} 
+                    dari {{ $notifications->total() }} notifikasi
+                </div>
+                <div>
+                    {{ $notifications->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
+            @else
+            <div class="text-center text-muted small mt-3">
+                Total {{ $notifications->total() }} notifikasi
+            </div>
             @endif
         </div>
     </div>

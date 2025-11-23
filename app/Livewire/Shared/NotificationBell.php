@@ -11,14 +11,12 @@ class NotificationBell extends Component
     public $unreadCount = 0;
     public $notifications = [];
 
-    protected $listeners = ['refreshNotifications' => 'refresh'];
-
     public function mount()
     {
-        $this->refresh();
+        $this->loadNotifications();
     }
 
-    public function refresh()
+    public function loadNotifications()
     {
         $this->unreadCount = Notification::where('user_id', Auth::id())
             ->unread()
@@ -38,10 +36,9 @@ class NotificationBell extends Component
 
         if ($notification) {
             $notification->markAsRead();
-            $this->refresh();
+            $this->loadNotifications();
             
-            // Hanya refresh, tidak redirect (biar user tetap di halaman saat ini)
-            $this->dispatch('showInfo', ['message' => 'Notifikasi ditandai sudah dibaca']);
+            return redirect()->route(Auth::user()->role . '.notifikasi');
         }
     }
 
@@ -54,14 +51,7 @@ class NotificationBell extends Component
                 'read_at' => now()
             ]);
 
-        $this->refresh();
-        $this->dispatch('showSuccess', ['message' => 'Semua notifikasi ditandai sudah dibaca']);
-    }
-
-    public function goToNotificationsPage()
-    {
-        // Redirect ke halaman notifikasi
-        return redirect()->route(Auth::user()->role . '.notifikasi');
+        $this->loadNotifications();
     }
 
     public function render()

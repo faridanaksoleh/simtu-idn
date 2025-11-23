@@ -8,6 +8,7 @@ use App\Livewire\Admin\DashboardAdmin;
 use App\Livewire\Admin\KelolaUser;
 use App\Livewire\Admin\KelolaKategori;
 use App\Livewire\Admin\AdminTransaksi;
+use App\Livewire\Admin\BroadcastNotifikasi;
 use App\Livewire\Admin\SemuaTransaksi;
 use App\Livewire\Admin\PersetujuanTransaksi as AdminPersetujuanTransaksi;
 use App\Livewire\Admin\LaporanKeuangan as AdminLaporanKeuangan;
@@ -79,9 +80,8 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/semua-transaksi', SemuaTransaksi::class)->name('admin.semua-transaksi');
         Route::get('/persetujuan-transaksi', AdminPersetujuanTransaksi::class)->name('admin.persetujuan-transaksi');
         Route::get('/laporan-keuangan', AdminLaporanKeuangan::class)->name('admin.laporan-keuangan');
-        Route::get('/notifikasi', AdminNotifikasi::class)->name('admin.notifikasi');
         Route::get('/profil', AdminProfil::class)->name('admin.profil');
-        Route::get('/notifikasi', AdminNotifikasi::class)->name('admin.notifikasi');        
+        Route::get('/broadcast-notifikasi', BroadcastNotifikasi::class)->name('admin.broadcast-notifikasi');
     });
 
     // KOORDINATOR - Gunakan imported classes
@@ -95,7 +95,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/laporan-keuangan', LaporanKeuangan::class)->name('koordinator.laporan-keuangan');
         Route::get('/notifikasi', KoordinatorNotifikasi::class)->name('koordinator.notifikasi');
         Route::get('/profil', KoordinatorProfil::class)->name('koordinator.profil');
-        Route::get('/notifikasi', KoordinatorNotifikasi::class)->name('koordinator.notifikasi');
     });
 
     // MAHASISWA - Gunakan imported classes
@@ -108,7 +107,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/konsultasi', Konsultasi::class)->name('mahasiswa.konsultasi');
         Route::get('/notifikasi', MahasiswaNotifikasi::class)->name('mahasiswa.notifikasi');
         Route::get('/profil', MahasiswaProfil::class)->name('mahasiswa.profil');
-        Route::get('/notifikasi', MahasiswaNotifikasi::class)->name('mahasiswa.notifikasi');
     });
 });
 
