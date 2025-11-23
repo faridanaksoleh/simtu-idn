@@ -38,8 +38,25 @@ class NotificationBell extends Component
             $notification->markAsRead();
             $this->loadNotifications();
             
-            return redirect()->route(Auth::user()->role . '.notifikasi');
+            // 🔥 FIX: Redirect admin ke dashboard, lainnya ke notifikasi
+            $role = Auth::user()->role;
+            if ($role === 'admin') {
+                return redirect()->route('admin.dashboard');
+            }
+            
+            return redirect()->route($role . '.notifikasi');
         }
+    }
+
+    // 🔥 TAMBAHKAN method untuk "Lihat semua notifikasi"
+    public function goToNotificationsPage()
+    {
+        $role = Auth::user()->role;
+        if ($role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+        
+        return redirect()->route($role . '.notifikasi');
     }
 
     public function markAllAsRead()

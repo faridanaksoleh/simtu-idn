@@ -55,13 +55,15 @@
             </a>
           </li>
           
-          <!-- 🔥 LINK NOTIFIKASI DI PROFILE DROPDOWN -->
-          <li>
-            <a class="dropdown-item d-flex align-items-center" href="{{ route(auth()->user()->role . '.notifikasi') }}">
-              <i class="bi bi-bell"></i>
-              <span>Notifikasi</span>
-            </a>
-          </li>
+          <!-- 🔥 LINK NOTIFIKASI DI PROFILE DROPDOWN - HIDE UNTUK ADMIN -->
+          @if(auth()->user()->role !== 'admin')
+            <li>
+                <a class="dropdown-item d-flex align-items-center" href="{{ route(auth()->user()->role . '.notifikasi') }}">
+                    <i class="bi bi-bell"></i>
+                    <span>Notifikasi</span>
+                </a>
+            </li>
+          @endif
           
           <li><hr class="dropdown-divider"></li>
 
