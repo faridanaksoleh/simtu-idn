@@ -52,7 +52,14 @@ class Profil extends Component
             'phone' => $this->phone,
         ]);
 
-        session()->flash('success', 'Profil berhasil diperbarui!');
+        // 🔥 GUNAKAN SWEETALERT KONSISTEN DENGAN ADMIN
+        $this->dispatch('showSuccess', [
+            'message' => 'Profil berhasil diperbarui!'
+        ]);
+
+        // Refresh current photo jika diupdate
+        $this->current_photo = $user->photo;
+        $this->photo = null;
     }
 
     public function render()
