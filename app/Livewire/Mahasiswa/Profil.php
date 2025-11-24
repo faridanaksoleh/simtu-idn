@@ -27,9 +27,6 @@ class Profil extends Component
         'TRKJ' => 'Teknologi Rekayasa Komputer & Jaringan'
     ];
 
-    // Hapus $classes dan $isClassDisabled dari public properties
-    // Kita akan gunakan computed property
-
     public function mount()
     {
         $user = Auth::user();
@@ -46,7 +43,6 @@ class Profil extends Component
     public function updatedMajor($value)
     {
         $this->class = ''; // Reset kelas ketika ganti jurusan
-        $this->dispatch('major-updated'); // Dispatch event untuk refresh
     }
 
     // Computed property untuk classes
@@ -99,7 +95,14 @@ class Profil extends Component
             'class' => $this->class,
         ]);
 
-        session()->flash('success', 'Profil berhasil diperbarui!');
+        // 🔥 GUNAKAN SWEETALERT KONSISTEN
+        $this->dispatch('showSuccess', [
+            'message' => 'Profil berhasil diperbarui!'
+        ]);
+
+        // Refresh current photo jika diupdate
+        $this->current_photo = $user->photo;
+        $this->photo = null;
     }
 
     public function render()
