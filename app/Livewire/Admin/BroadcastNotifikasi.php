@@ -15,6 +15,8 @@ class BroadcastNotifikasi extends Component
     protected $rules = [
         'title' => 'required|min:5|max:200',
         'message' => 'required|min:10',
+        'target' => 'required|in:students,all',
+        'type' => 'required|in:info,success,warning,danger',
     ];
 
     public function broadcast()
