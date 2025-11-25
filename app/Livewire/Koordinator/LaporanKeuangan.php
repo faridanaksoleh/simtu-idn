@@ -24,11 +24,10 @@ class LaporanKeuangan extends Component
     public $transactions = [];
     public $studentStats = [];
     
-    public $userClass; // Kelas koordinator
+    public $userClass;
 
     public function mount()
     {
-        // Ambil kelas dari user yang login (koordinator)
         $this->userClass = Auth::user()->class;
         $this->startDate = now()->startOfMonth()->format('Y-m-d');
         $this->endDate = now()->format('Y-m-d');
@@ -37,7 +36,6 @@ class LaporanKeuangan extends Component
 
     public function generateReport()
     {
-        // Query transactions hanya untuk siswa di kelas koordinator
         $query = Transaction::with(['user', 'category'])
             ->whereHas('user', function($q) {
                 $q->where('class', $this->userClass)
@@ -55,7 +53,6 @@ class LaporanKeuangan extends Component
 
         $this->transactions = $query->latest()->get();
 
-        // Calculate totals
         $this->totalIncome = $this->transactions
             ->where('type', 'income')
             ->where('status', 'approved')
@@ -68,7 +65,6 @@ class LaporanKeuangan extends Component
 
         $this->netBalance = $this->totalIncome - $this->totalExpense;
 
-        // Student statistics untuk kelas ini saja
         $this->studentStats = User::where('role', 'mahasiswa')
             ->where('class', $this->userClass)
             ->withCount(['transactions as total_transactions' => function($query) {
@@ -119,7 +115,9 @@ class LaporanKeuangan extends Component
             );
             
         } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Error generating PDF: ' . $e->getMessage());
+            $this->dispatch('showError', [
+                'message' => 'Error generating PDF: ' . $e->getMessage()
+            ]);
             return null;
         }
     }
@@ -140,14 +138,15 @@ class LaporanKeuangan extends Component
                 'className' => $this->userClass,
             ];
 
-            // PASTIKAN menggunakan class yang benar
             return Excel::download(
                 new LaporanKeuanganKoordinatorExport($data), 
                 'laporan-keuangan-' . $this->userClass . '-' . now()->format('Y-m-d') . '.xlsx'
             );
             
         } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Error generating Excel: ' . $e->getMessage());
+            $this->dispatch('showError', [
+                'message' => 'Error generating Excel: ' . $e->getMessage()
+            ]);
             return null;
         }
     }

@@ -4,7 +4,7 @@
         <!-- HEADER UTAMA DENGAN WARNA KONSISTEN (BIRU) -->
         <div class="card-header border-0 d-flex justify-content-between align-items-center py-3" style="background-color: #1D4ED8;">
             <h5 class="mb-0 text-white fw-semibold fs-6">
-                <i class="bi bi-person-gear me-2"></i>Profil Koordinator
+                <i class="bi bi-person-fill me-2"></i>Profil Koordinator
             </h5>
         </div>
 
