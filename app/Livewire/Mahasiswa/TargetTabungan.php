@@ -14,6 +14,7 @@ class TargetTabungan extends Component
     public $deadline;
     public $editMode = false;
     public $editingGoal = null;
+    public $deleteId = null; // Tambahkan property untuk menyimpan ID yang akan dihapus
 
     protected $rules = [
         'goalName' => 'required|string|max:100',
@@ -21,9 +22,11 @@ class TargetTabungan extends Component
         'deadline' => 'required|date|after:today'
     ];
 
+    // Tambahkan listener untuk event delete confirmation
+    protected $listeners = ['deleteConfirmed'];
+
     public function mount()
     {
-        // Auto-calculate current progress dari transaksi approved
         $this->calculateProgress();
     }
 
@@ -31,31 +34,40 @@ class TargetTabungan extends Component
     {
         $this->validate();
 
-        if ($this->editMode && $this->editingGoal) {
-            // Update existing goal
-            $this->editingGoal->update([
-                'goal_name' => $this->goalName,
-                'target_amount' => $this->targetAmount,
-                'deadline' => $this->deadline,
-            ]);
-            
-            session()->flash('success', 'Target tabungan berhasil diupdate!');
-        } else {
-            // Create new goal
-            SavingsGoal::create([
-                'user_id' => Auth::id(),
-                'goal_name' => $this->goalName,
-                'target_amount' => $this->targetAmount,
-                'current_amount' => 0, // Akan dihitung otomatis
-                'deadline' => $this->deadline,
-                'status' => 'active'
-            ]);
-            
-            session()->flash('success', 'Target tabungan berhasil dibuat!');
-        }
+        try {
+            if ($this->editMode && $this->editingGoal) {
+                $this->editingGoal->update([
+                    'goal_name' => $this->goalName,
+                    'target_amount' => $this->targetAmount,
+                    'deadline' => $this->deadline,
+                ]);
+                
+                $this->dispatch('showSuccess', [
+                    'message' => 'Target tabungan berhasil diupdate!'
+                ]);
+            } else {
+                SavingsGoal::create([
+                    'user_id' => Auth::id(),
+                    'goal_name' => $this->goalName,
+                    'target_amount' => $this->targetAmount,
+                    'current_amount' => 0,
+                    'deadline' => $this->deadline,
+                    'status' => 'active'
+                ]);
+                
+                $this->dispatch('showSuccess', [
+                    'message' => 'Target tabungan berhasil dibuat!'
+                ]);
+            }
 
-        $this->resetForm();
-        $this->calculateProgress();
+            $this->resetForm();
+            $this->calculateProgress();
+
+        } catch (\Exception $e) {
+            $this->dispatch('showError', [
+                'message' => 'Gagal menyimpan target: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function editGoal($goalId)
@@ -71,15 +83,76 @@ class TargetTabungan extends Component
     public function deleteGoal($goalId)
     {
         $goal = SavingsGoal::findOrFail($goalId);
-        $goal->delete();
         
-        session()->flash('success', 'Target tabungan berhasil dihapus!');
-        $this->calculateProgress();
+        // Simpan ID yang akan dihapus
+        $this->deleteId = $goalId;
+        
+        // Dispatch event untuk SweetAlert confirmation
+        $this->dispatch('showDeleteConfirmation', [
+            'title' => 'Hapus Target Tabungan?',
+            'text' => "Target '" . $goal->goal_name . "' akan dihapus permanen!",
+            'confirmText' => 'Ya, Hapus!',
+            'cancelText' => 'Batal',
+            'id' => $goalId
+        ]);
+    }
+
+    // Method yang dipanggil ketika delete dikonfirmasi - TANPA PARAMETER
+    public function deleteConfirmed()
+    {
+        if (!$this->deleteId) {
+            $this->dispatch('showError', [
+                'message' => 'ID target tidak valid!'
+            ]);
+            return;
+        }
+        
+        try {
+            $goal = SavingsGoal::findOrFail($this->deleteId);
+            $goalName = $goal->goal_name;
+            $goal->delete();
+            
+            $this->dispatch('showSuccess', [
+                'message' => 'Target "'.$goalName.'" berhasil dihapus!'
+            ]);
+            
+            $this->calculateProgress();
+            
+            // Reset deleteId setelah berhasil dihapus
+            $this->deleteId = null;
+
+        } catch (\Exception $e) {
+            $this->dispatch('showError', [
+                'message' => 'Gagal menghapus target: ' . $e->getMessage()
+            ]);
+            $this->deleteId = null;
+        }
     }
 
     public function cancelEdit()
     {
         $this->resetForm();
+    }
+
+    public function updateStatus($goalId, $status)
+    {
+        try {
+            $goal = SavingsGoal::findOrFail($goalId);
+            $goal->update(['status' => $status]);
+            
+            $statusText = $status == 'active' ? 'diaktifkan' : ($status == 'completed' ? 'diselesaikan' : 'ditunda');
+            
+            $this->dispatch('showSuccess', [
+                'message' => 'Target "'.$goal->goal_name.'" berhasil '.$statusText.'!'
+            ]);
+            
+            $this->calculateProgress();
+
+        } catch (\Exception $e) {
+            $this->dispatch('showError', [
+                'message' => 'Gagal mengupdate status: ' . $e->getMessage()
+            ]);
+        }
     }
 
     private function resetForm()
@@ -89,18 +162,15 @@ class TargetTabungan extends Component
 
     private function calculateProgress()
     {
-        // Hitung total tabungan dari transaksi approved
         $totalTabungan = Transaction::where('user_id', Auth::id())
             ->where('status', 'approved')
             ->where('type', 'income')
             ->sum('amount');
 
-        // Update current_amount di semua goals aktif
         SavingsGoal::where('user_id', Auth::id())
             ->where('status', 'active')
             ->update(['current_amount' => $totalTabungan]);
 
-        // Auto update status goal
         $goals = SavingsGoal::where('user_id', Auth::id())->get();
         foreach ($goals as $goal) {
             $progress = ($goal->current_amount / $goal->target_amount) * 100;
@@ -113,18 +183,8 @@ class TargetTabungan extends Component
         }
     }
 
-    public function updateStatus($goalId, $status)
-    {
-        $goal = SavingsGoal::findOrFail($goalId);
-        $goal->update(['status' => $status]);
-        
-        $this->calculateProgress();
-    }
-
-    // Tambah method ini di TargetTabungan.php
     public function getChartData()
     {
-        // Ambil data transaksi approved per bulan
         $monthlyData = Transaction::where('user_id', Auth::id())
             ->where('status', 'approved')
             ->where('type', 'income')
@@ -142,7 +202,6 @@ class TargetTabungan extends Component
             $categories[] = \Carbon\Carbon::create()->month($data->month)->format('M');
         }
 
-        // Jika tidak ada data, beri sample data
         if (empty($chartData)) {
             $chartData = [0, 0, 0, 0, 0, 0];
             $categories = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun'];

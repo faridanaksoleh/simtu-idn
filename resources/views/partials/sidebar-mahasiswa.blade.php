@@ -13,7 +13,7 @@
 
     <li class="nav-item">
       <a wire:navigate class="nav-link {{ request()->routeIs('mahasiswa.target-tabungan') ? '' : 'collapsed' }}" href="{{ route('mahasiswa.target-tabungan') }}">
-        <i class="bi bi-coin"></i> 
+        <i class="bi bi-bullseye"></i> 
         <span>Target Tabungan</span>
       </a>
     </li>
