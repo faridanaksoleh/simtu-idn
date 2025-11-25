@@ -58,7 +58,7 @@ class LaporanKeuangan extends Component
 
         $this->netBalance = $this->totalIncome - $this->totalExpense;
 
-        // User statistics - HAPUS DUPLIKASI, GUNAKAN INI SAJA
+        // User statistics
         $this->userStats = User::where('role', 'mahasiswa')
             ->withCount(['transactions as total_transactions' => function($query) {
                 $query->whereBetween('date', [$this->startDate, $this->endDate])
@@ -71,35 +71,18 @@ class LaporanKeuangan extends Component
             }], 'amount')
             ->get()
             ->map(function($user) {
-                // Pastikan nilai default untuk menghindari null
                 $user->total_transactions = $user->total_transactions ?? 0;
                 $user->total_savings = $user->total_savings ?? 0;
                 return $user;
             })
             ->filter(function($user) {
-                // Filter manual: tampilkan user yang memiliki transaksi ATAU tabungan
                 return $user->total_transactions > 0 || $user->total_savings > 0;
             });
-
-        // Debug: log hasil query - TAMBAHKAN INI UNTUK DEBUG
-        \Log::info('User Stats After Generate:', [
-            'startDate' => $this->startDate,
-            'endDate' => $this->endDate,
-            'userStats_count' => $this->userStats->count(),
-            'userStats' => $this->userStats->map(function($user) {
-                return [
-                    'name' => $user->name,
-                    'total_transactions' => $user->total_transactions,
-                    'total_savings' => $user->total_savings,
-                ];
-            })->toArray()
-        ]);
     }
 
     public function exportPDF()
     {
         try {
-            // PASTIKAN DATA TERBARU DENGAN MEMANGGIL generateReport() SEBELUM EXPORT
             $this->generateReport();
             
             $data = [
@@ -114,17 +97,6 @@ class LaporanKeuangan extends Component
                 'statusFilter' => $this->statusFilter,
             ];
 
-            // Debug sebelum generate PDF
-            \Log::info('PDF Export Data:', [
-                'userStats_count' => $data['userStats']->count(),
-                'userStats' => $data['userStats']->map(function($user) {
-                    return [
-                        'name' => $user->name,
-                        'total_savings' => $user->total_savings,
-                    ];
-                })->toArray()
-            ]);
-
             $pdf = Pdf::loadHTML($this->generatePDFContent($data));
             
             return response()->streamDownload(
@@ -135,7 +107,9 @@ class LaporanKeuangan extends Component
             );
             
         } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Error generating PDF: ' . $e->getMessage());
+            $this->dispatch('showError', [
+                'message' => 'Error generating PDF: ' . $e->getMessage()
+            ]);
             return null;
         }
     }
@@ -143,7 +117,6 @@ class LaporanKeuangan extends Component
     public function exportExcel()
     {
         try {
-            // PASTIKAN DATA TERBARU DENGAN MEMANGGIL generateReport() SEBELUM EXPORT
             $this->generateReport();
             
             $data = [
@@ -156,21 +129,12 @@ class LaporanKeuangan extends Component
                 'userStats' => $this->userStats,
             ];
 
-            // Debug sebelum generate Excel
-            \Log::info('Excel Export Data:', [
-                'userStats_count' => $data['userStats']->count(),
-                'userStats' => $data['userStats']->map(function($user) {
-                    return [
-                        'name' => $user->name,
-                        'total_savings' => $user->total_savings,
-                    ];
-                })->toArray()
-            ]);
-
             return Excel::download(new LaporanKeuanganAdminExport($data), 'laporan-keuangan-' . now()->format('Y-m-d') . '.xlsx');
             
         } catch (\Exception $e) {
-            $this->dispatch('error', message: 'Error generating Excel: ' . $e->getMessage());
+            $this->dispatch('showError', [
+                'message' => 'Error generating Excel: ' . $e->getMessage()
+            ]);
             return null;
         }
     }

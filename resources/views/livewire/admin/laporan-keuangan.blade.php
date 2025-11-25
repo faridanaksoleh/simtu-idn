@@ -1,241 +1,252 @@
 <div>
-    <div class="pagetitle">
-        <h1>Laporan Keuangan</h1>
-        <nav>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item active">Laporan Keuangan</li>
-            </ol>
-            <!-- Flash Messages -->
-            @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-octagon me-1"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
+    <!-- Main Card Container -->
+    <div class="card border-0 shadow-sm">
+        <!-- HEADER UTAMA DENGAN BIRU TUA KONSISTEN -->
+        <div class="card-header border-0 d-flex justify-content-between align-items-center py-3" style="background-color: #1D4ED8;">
+            <h5 class="mb-0 text-white fw-semibold fs-6">
+                <i class="bi bi-graph-up me-2"></i>Laporan Keuangan
+            </h5>
+        </div>
 
-            @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle me-1"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-        </nav>
-    </div>
+        <div class="card-body p-0">
+            <!-- Filter Section -->
+            <div class="p-4 border-bottom">
+                <h6 class="fw-semibold text-dark mb-3">
+                    <i class="bi bi-funnel me-2 text-primary"></i>Filter Laporan
+                </h6>
+                <form wire:submit.prevent="generateReport">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold text-dark">Tanggal Mulai</label>
+                            <input type="date" class="form-control border" wire:model.live="startDate">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold text-dark">Tanggal Akhir</label>
+                            <input type="date" class="form-control border" wire:model.live="endDate">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold text-dark">Tipe Transaksi</label>
+                            <select class="form-control border" wire:model.live="reportType">
+                                <option value="all">Semua</option>
+                                <option value="income">Pemasukan</option>
+                                <option value="expense">Pengeluaran</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label fw-semibold text-dark">Status</label>
+                            <select class="form-control border" wire:model.live="statusFilter">
+                                <option value="approved">Disetujui</option>
+                                <option value="all">Semua Status</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100 d-flex align-items-center justify-content-center">
+                                <i class="bi bi-filter me-1"></i>Terapkan
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
 
-    <!-- Filter Section -->
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Filter Laporan</h5>
-            <form wire:submit.prevent="generateReport">
-                <div class="row g-3">
-                    <div class="col-md-3">
-                        <label class="form-label">Tanggal Mulai</label>
-                        <input type="date" class="form-control" wire:model.live="startDate">
+            <!-- Summary Cards -->
+            <div class="row m-0 p-4 border-bottom">
+                <div class="col-lg-4 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-success bg-opacity-10 rounded-circle p-3 me-3">
+                                    <i class="bi bi-arrow-down-circle text-success fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="card-title text-muted mb-1">Total Pemasukan</h6>
+                                    <h4 class="fw-bold text-success mb-0">Rp {{ number_format($totalIncome, 0, ',', '.') }}</h4>
+                                    <small class="text-muted">Pemasukan disetujui</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-3">
-                        <label class="form-label">Tanggal Akhir</label>
-                        <input type="date" class="form-control" wire:model.live="endDate">
+                </div>
+
+                <div class="col-lg-4 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-danger bg-opacity-10 rounded-circle p-3 me-3">
+                                    <i class="bi bi-arrow-up-circle text-danger fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="card-title text-muted mb-1">Total Pengeluaran</h6>
+                                    <h4 class="fw-bold text-danger mb-0">Rp {{ number_format($totalExpense, 0, ',', '.') }}</h4>
+                                    <small class="text-muted">Pengeluaran disetujui</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Tipe Transaksi</label>
-                        <select class="form-select" wire:model.live="reportType">
-                            <option value="all">Semua</option>
-                            <option value="income">Pemasukan</option>
-                            <option value="expense">Pengeluaran</option>
-                        </select>
+                </div>
+
+                <div class="col-lg-4 mb-3">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-flex align-items-center">
+                                <div class="{{ $netBalance >= 0 ? 'bg-success' : 'bg-danger' }} bg-opacity-10 rounded-circle p-3 me-3">
+                                    <i class="bi bi-wallet2 {{ $netBalance >= 0 ? 'text-success' : 'text-danger' }} fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="card-title text-muted mb-1">Saldo Bersih</h6>
+                                    <h4 class="fw-bold {{ $netBalance >= 0 ? 'text-success' : 'text-danger' }} mb-0">
+                                        Rp {{ number_format($netBalance, 0, ',', '.') }}
+                                    </h4>
+                                    <small class="text-muted">{{ $netBalance >= 0 ? 'Surplus' : 'Defisit' }}</small>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col-md-2">
-                        <label class="form-label">Status</label>
-                        <select class="form-select" wire:model.live="statusFilter">
-                            <option value="approved">Disetujui</option>
-                            <option value="all">Semua Status</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-flex align-items-end">
-                        <button type="submit" class="btn btn-primary w-100">
-                            <i class="bi bi-filter me-1"></i>Terapkan Filter
+                </div>
+            </div>
+
+            <!-- Export Buttons -->
+            <div class="p-4 border-bottom">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h6 class="fw-semibold text-dark mb-0">
+                        <i class="bi bi-download me-2 text-primary"></i>Export Laporan
+                    </h6>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-success d-flex align-items-center px-3" wire:click="exportPDF"
+                                wire:loading.attr="disabled">
+                            <span wire:loading.remove>
+                                <i class="bi bi-file-pdf me-2"></i>Export PDF
+                            </span>
+                            <span wire:loading>
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                Generating...
+                            </span>
+                        </button>
+                        <button class="btn btn-primary d-flex align-items-center px-3" wire:click="exportExcel"
+                                wire:loading.attr="disabled">
+                            <span wire:loading.remove>
+                                <i class="bi bi-file-spreadsheet me-2"></i>Export Excel
+                            </span>
+                            <span wire:loading>
+                                <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                Generating...
+                            </span>
                         </button>
                     </div>
                 </div>
-            </form>
-        </div>
-    </div>
+            </div>
 
-    <!-- Summary Cards -->
-    <div class="row mt-4">
-        <div class="col-lg-4">
-            <div class="card info-card revenue-card">
-                <div class="card-body">
-                    <h5 class="card-title">Total Pemasukan</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-arrow-down-circle text-success"></i>
-                        </div>
-                        <div class="ps-3">
-                            <h6>Rp {{ number_format($totalIncome, 0, ',', '.') }}</h6>
-                            <span class="text-success small pt-1 fw-bold">Pemasukan</span>
-                        </div>
-                    </div>
+            <!-- Transactions Table -->
+            <div class="p-4 border-bottom">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-semibold text-dark mb-0">
+                        <i class="bi bi-list-ul me-2 text-primary"></i>Detail Transaksi 
+                        <span class="badge bg-primary ms-2">{{ count($transactions) }} records</span>
+                    </h6>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>User</th>
+                                <th>Tipe</th>
+                                <th>Kategori</th>
+                                <th class="text-end">Jumlah</th>
+                                <th>Status</th>
+                                <th>Deskripsi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($transactions as $transaction)
+                                <tr>
+                                    <td class="fw-medium">{{ $transaction->created_at->format('d/m/Y H:i') }}</td>
+                                    <td>
+                                        <div class="d-flex flex-column">
+                                            <strong class="text-dark">{{ $transaction->user->name }}</strong>
+                                            <small class="text-muted">{{ $transaction->user->email }}</small>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $transaction->type === 'income' ? 'success' : 'danger' }}">
+                                            {{ ucfirst($transaction->type) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-medium">{{ $transaction->category->name }}</span>
+                                    </td>
+                                    <td class="text-end {{ $transaction->amount >= 0 ? 'text-success' : 'text-danger' }} fw-bold">
+                                        {{ $transaction->amount >= 0 ? '+' : '-' }}Rp{{ number_format(abs($transaction->amount), 0, ',', '.') }}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-{{ $transaction->status === 'approved' ? 'success' : ($transaction->status === 'pending' ? 'warning' : 'danger') }}">
+                                            {{ ucfirst($transaction->status) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted">{{ $transaction->description ?? '-' }}</span>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted py-4">
+                                        <i class="bi bi-inbox display-6 d-block mb-2"></i>
+                                        <span class="fw-medium">Tidak ada transaksi pada periode yang dipilih</span>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        </div>
 
-        <div class="col-lg-4">
-            <div class="card info-card sales-card">
-                <div class="card-body">
-                    <h5 class="card-title">Total Pengeluaran</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-arrow-up-circle text-danger"></i>
-                        </div>
-                        <div class="ps-3">
-                            <h6>Rp {{ number_format($totalExpense, 0, ',', '.') }}</h6>
-                            <span class="text-danger small pt-1 fw-bold">Pengeluaran</span>
-                        </div>
-                    </div>
+            <!-- User Statistics -->
+            <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="fw-semibold text-dark mb-0">
+                        <i class="bi bi-people me-2 text-primary"></i>Statistik Mahasiswa
+                    </h6>
                 </div>
-            </div>
-        </div>
-
-        <div class="col-lg-4">
-            <div class="card info-card customers-card">
-                <div class="card-body">
-                    <h5 class="card-title">Saldo Bersih</h5>
-                    <div class="d-flex align-items-center">
-                        <div class="card-icon rounded-circle d-flex align-items-center justify-content-center">
-                            <i class="bi bi-wallet2 {{ $netBalance >= 0 ? 'text-success' : 'text-danger' }}"></i>
-                        </div>
-                        <div class="ps-3">
-                            <h6>Rp {{ number_format($netBalance, 0, ',', '.') }}</h6>
-                            <span class="{{ $netBalance >= 0 ? 'text-success' : 'text-danger' }} small pt-1 fw-bold">
-                                {{ $netBalance >= 0 ? 'Surplus' : 'Defisit' }}
-                            </span>
-                        </div>
-                    </div>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Kelas</th>
+                                <th class="text-center">Total Transaksi</th>
+                                <th class="text-end">Total Tabungan</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($userStats as $user)
+                                <tr>
+                                    <td class="fw-medium">{{ $user->name }}</td>
+                                    <td>
+                                        <small class="text-muted">{{ $user->email }}</small>
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary">{{ $user->class }}</span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="fw-bold text-dark">{{ $user->total_transactions }}</span>
+                                    </td>
+                                    <td class="text-end text-success fw-bold">
+                                        Rp {{ number_format($user->total_savings, 0, ',', '.') }}
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="text-center text-muted py-4">
+                                        <i class="bi bi-people display-6 d-block mb-2"></i>
+                                        <span class="fw-medium">Tidak ada data mahasiswa</span>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Export Buttons -->
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title mb-0">Export Laporan</h5>
-                        <div class="btn-group">
-                            <button class="btn btn-success" wire:click="exportPDF">
-                                <i class="bi bi-file-pdf me-1"></i>Export PDF
-                            </button>
-                            <button class="btn btn-primary" wire:click="exportExcel">
-                                <i class="bi bi-file-spreadsheet me-1"></i>Export Excel
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Transactions Table -->
-    <div class="card mt-4">
-        <div class="card-body">
-            <h5 class="card-title">Detail Transaksi ({{ count($transactions) }} records)</h5>
-            
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Tanggal</th>
-                            <th>User</th>
-                            <th>Tipe</th>
-                            <th>Kategori</th>
-                            <th>Jumlah</th>
-                            <th>Status</th>
-                            <th>Deskripsi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($transactions as $transaction)
-                            <tr>
-                                <td>{{ $transaction->created_at->format('d/m/Y H:i') }}</td>
-                                <td>
-                                    <strong>{{ $transaction->user->name }}</strong>
-                                    <br><small class="text-muted">{{ $transaction->user->email }}</small>
-                                </td>
-                                <td>
-                                    <span class="badge bg-{{ $transaction->type === 'income' ? 'success' : 'danger' }}">
-                                        {{ ucfirst($transaction->type) }}
-                                    </span>
-                                </td>
-                                <td>{{ $transaction->category->name }}</td>
-                                <td class="{{ $transaction->amount >= 0 ? 'text-success' : 'text-danger' }} fw-bold">
-                                    {{ $transaction->amount >= 0 ? '+' : '-' }}Rp{{ number_format(abs($transaction->amount), 0, ',', '.') }}
-                                </td>
-                                <td>
-                                    <span class="badge bg-{{ $transaction->status === 'approved' ? 'success' : ($transaction->status === 'pending' ? 'warning' : 'danger') }}">
-                                        {{ ucfirst($transaction->status) }}
-                                    </span>
-                                </td>
-                                <td>{{ $transaction->description ?? '-' }}</td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="text-center text-muted py-4">
-                                    <i class="bi bi-inbox display-4 d-block mb-2"></i>
-                                    Tidak ada transaksi pada periode yang dipilih
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <!-- User Statistics -->
-    <div class="card mt-4">
-        <div class="card-body">
-            <h5 class="card-title">Statistik Mahasiswa</h5>
-            
-            <div class="table-responsive">
-                <table class="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>Kelas</th>
-                            <th>Total Transaksi</th>
-                            <th>Total Tabungan</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($userStats as $user)
-                            <tr>
-                                <td>{{ $user->name }}</td>
-                                <td>{{ $user->email }}</td>
-                                <td>
-                                    <span class="badge bg-primary">{{ $user->class }}</span>
-                                </td>
-                                <td>{{ $user->total_transactions }}</td>
-                                <td class="text-success fw-bold">
-                                    Rp {{ number_format($user->total_savings, 0, ',', '.') }}
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="5" class="text-center text-muted py-4">
-                                    <i class="bi bi-people display-4 d-block mb-2"></i>
-                                    Tidak ada data mahasiswa
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
             </div>
         </div>
     </div>
