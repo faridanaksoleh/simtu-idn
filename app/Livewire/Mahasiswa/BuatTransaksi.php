@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 
 class BuatTransaksi extends Component
 {
-    use WithFileUploads; // ✅ PASTIKAN INI ADA
+    use WithFileUploads;
 
     public $amount, $category_id, $description, $bukti;
     public $transaction_type = 'income';
@@ -25,28 +25,41 @@ class BuatTransaksi extends Component
     {
         $this->validate();
 
-        $path = $this->bukti ? $this->bukti->store('bukti-transaksi', 'public') : null;
+        try {
+            $path = $this->bukti ? $this->bukti->store('bukti-transaksi', 'public') : null;
 
-        $finalAmount = $this->transaction_type === 'expense' 
-            ? -$this->amount 
-            : $this->amount;
+            $finalAmount = $this->transaction_type === 'expense' 
+                ? -$this->amount 
+                : $this->amount;
 
-        Transaction::create([
-            'user_id' => Auth::id(),
-            'category_id' => $this->category_id,
-            'type' => $this->transaction_type,
-            'amount' => $finalAmount,
-            'description' => $this->description,
-            'date' => now(),
-            'payment_method' => 'transfer',
-            'payment_proof' => $path,
-            'status' => 'pending',
-        ]);
+            Transaction::create([
+                'user_id' => Auth::id(),
+                'category_id' => $this->category_id,
+                'type' => $this->transaction_type,
+                'amount' => $finalAmount,
+                'description' => $this->description,
+                'date' => now(),
+                'payment_method' => 'transfer',
+                'payment_proof' => $path,
+                'status' => 'pending',
+            ]);
 
-        $this->reset();
-        session()->flash('success', 'Transaksi berhasil!');
-        
-        $this->dispatch('transactionCreated');
+            $this->reset();
+            
+            // 🔥 GUNAKAN SWEETALERT2 DARI LIVEWIRE DISPATCH
+            $this->dispatch('showSuccess', [
+                'message' => $this->transaction_type === 'income' 
+                    ? 'Setoran berhasil disimpan! Menunggu persetujuan koordinator.' 
+                    : 'Pengajuan penarikan berhasil! Menunggu persetujuan koordinator.'
+            ]);
+            
+            $this->dispatch('transactionCreated');
+            
+        } catch (\Exception $e) {
+            $this->dispatch('showError', [
+                'message' => 'Gagal menyimpan transaksi: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function render()

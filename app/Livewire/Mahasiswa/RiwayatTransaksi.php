@@ -16,6 +16,34 @@ class RiwayatTransaksi extends Component
 
     protected $listeners = ['transactionCreated' => '$refresh'];
 
+    // 🔥 TAMBAHKAN: Method untuk pagination
+    public function paginationView()
+    {
+        return 'livewire::bootstrap';
+    }
+
+    public function updatingPage($page)
+    {
+        // Reset state jika perlu
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
+    public function updatingStatus()
+    {
+        $this->resetPage();
+    }
+
+    // 🔥 PERBAIKAN: Tambah method resetFilters
+    public function resetFilters()
+    {
+        $this->reset(['search', 'status']);
+        $this->resetPage();
+    }
+
     public function render()
     {
         $query = Transaction::where('user_id', Auth::id())
@@ -24,13 +52,10 @@ class RiwayatTransaksi extends Component
 
         if ($this->search) {
             $query->where(function($q) {
-                // CARI KATEGORI (string match)
                 $q->whereHas('category', function($categoryQuery) {
                     $categoryQuery->where('name', 'like', "%{$this->search}%");
                 });
                 
-                // CARI JUMLAH (partial number match)
-                // Hapus semua karakter non-digit dan cari partial match
                 $numericSearch = preg_replace('/[^0-9]/', '', $this->search);
                 if (!empty($numericSearch)) {
                     $q->orWhereRaw('ABS(amount) LIKE ?', ["%{$numericSearch}%"]);
