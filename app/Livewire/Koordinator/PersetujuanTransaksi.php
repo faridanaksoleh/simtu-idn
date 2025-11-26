@@ -14,14 +14,28 @@ class PersetujuanTransaksi extends Component
     public $search = '';
     public $kelasBimbingan;
 
+    // 🔥 TAMBAHKAN: Method untuk pagination
+    public function paginationView()
+    {
+        return 'livewire::bootstrap';
+    }
+
+    public function updatingPage($page)
+    {
+        // Reset state jika perlu
+    }
+
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function mount()
     {
-        // Ambil kelas yang dikelola koordinator
         $this->kelasBimbingan = Auth::user()->class;
         
-        // Fallback jika koordinator belum punya kelas
         if (!$this->kelasBimbingan) {
-            $this->kelasBimbingan = 'TRPL-A'; // Default fallback
+            $this->kelasBimbingan = 'TRPL-A';
             Auth::user()->update(['class' => $this->kelasBimbingan]);
         }
     }
@@ -30,9 +44,10 @@ class PersetujuanTransaksi extends Component
     {
         $transaction = Transaction::findOrFail($transactionId);
         
-        // Validasi: pastikan transaksi ini dari mahasiswa di kelas bimbingan
         if ($transaction->user->class !== $this->kelasBimbingan) {
-            session()->flash('error', 'Anda tidak memiliki akses untuk menyetujui transaksi ini!');
+            $this->dispatch('showError', [
+                'message' => 'Anda tidak memiliki akses untuk menyetujui transaksi ini!'
+            ]);
             return;
         }
 
@@ -42,16 +57,19 @@ class PersetujuanTransaksi extends Component
             'verified_at' => now(),
         ]);
 
-        session()->flash('success', 'Transaksi berhasil disetujui!');
+        $this->dispatch('showSuccess', [
+            'message' => 'Transaksi berhasil disetujui!'
+        ]);
     }
 
     public function reject($transactionId)
     {
         $transaction = Transaction::findOrFail($transactionId);
         
-        // Validasi: pastikan transaksi ini dari mahasiswa di kelas bimbingan
         if ($transaction->user->class !== $this->kelasBimbingan) {
-            session()->flash('error', 'Anda tidak memiliki akses untuk menolak transaksi ini!');
+            $this->dispatch('showError', [
+                'message' => 'Anda tidak memiliki akses untuk menolak transaksi ini!'
+            ]);
             return;
         }
 
@@ -61,14 +79,15 @@ class PersetujuanTransaksi extends Component
             'verified_at' => now(),
         ]);
 
-        session()->flash('success', 'Transaksi berhasil ditolak!');
+        $this->dispatch('showSuccess', [
+            'message' => 'Transaksi berhasil ditolak!'
+        ]);
     }
 
     public function render()
     {
         $user = Auth::user();
         
-        // Query hanya transaksi dari mahasiswa di kelas bimbingan koordinator
         $query = Transaction::with(['user', 'category'])
             ->where('status', 'pending')
             ->whereHas('user', function($q) use ($user) {
@@ -77,7 +96,6 @@ class PersetujuanTransaksi extends Component
             })
             ->latest();
 
-        // Search functionality
         if ($this->search) {
             $query->where(function($q) {
                 $q->whereHas('user', function($userQuery) {
@@ -89,7 +107,6 @@ class PersetujuanTransaksi extends Component
                 })
                 ->orWhere('description', 'like', "%{$this->search}%");
                 
-                // Search by amount (numeric only)
                 $numericSearch = preg_replace('/[^0-9]/', '', $this->search);
                 if (!empty($numericSearch)) {
                     $q->orWhereRaw('ABS(amount) LIKE ?', ["%{$numericSearch}%"]);
@@ -99,7 +116,6 @@ class PersetujuanTransaksi extends Component
 
         $transactions = $query->paginate(10);
         
-        // Count hanya transaksi dari kelas bimbingan
         $pendingCount = Transaction::where('status', 'pending')
             ->whereHas('user', function($q) use ($user) {
                 $q->where('class', $user->class)
