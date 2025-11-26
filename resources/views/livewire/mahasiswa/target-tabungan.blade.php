@@ -296,7 +296,7 @@
                                     @php
                                         $remainingPercent = 100 - $goal->progress_percent;
                                     @endphp
-                                    <span class="text-info">
+                                    <span class="text-success">
                                         <i class="bi bi-arrow-up-right me-1"></i>
                                         {{ number_format($remainingPercent, 1) }}% menuju target
                                     </span>

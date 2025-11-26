@@ -21,19 +21,52 @@ class KonsultasiMahasiswa extends Component
         'replyMessage' => 'required|min:10',
     ];
 
-    public function mount()
+    protected $listeners = ['refresh' => '$refresh'];
+
+    // 🔥 SAMA PERSIS DENGAN MAHASISWA
+    public function paginationView()
     {
-        $this->user = Auth::user();
+        return 'livewire::bootstrap';
+    }
+
+    public function updatingPage($page)
+    {
+        $this->reset(['selectedConsultation', 'replyMessage']);
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage();
+        $this->reset(['selectedConsultation', 'replyMessage']);
+    }
+
+    public function updatedFilterStatus()
+    {
+        $this->resetPage();
+        $this->reset(['selectedConsultation', 'replyMessage']);
+    }
+
+    // 🔥 METHOD resetFilters YANG BENAR
+    public function resetFilters()
+    {
+        $this->reset(['search', 'filterStatus', 'selectedConsultation', 'replyMessage']);
+        $this->resetPage();
     }
 
     public function selectConsultation($consultationId)
     {
-        $this->selectedConsultation = ConsultationNote::with(['student', 'coordinator'])
-            ->where('id', $consultationId)
-            ->firstOrFail();
+        try {
+            $this->selectedConsultation = ConsultationNote::with(['student', 'coordinator'])
+                ->where('id', $consultationId)
+                ->firstOrFail();
 
-        // Reset reply message ketika pilih konsultasi baru
-        $this->reset('replyMessage');
+            $this->reset('replyMessage');
+            
+        } catch (\Exception $e) {
+            $this->dispatch('showError', [
+                'message' => 'Gagal memuat konsultasi: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function closeDetail()
@@ -63,6 +96,7 @@ class KonsultasiMahasiswa extends Component
                 'message' => 'Balasan berhasil dikirim!'
             ]);
             
+            // Refresh selected consultation
             $this->selectConsultation($consultation->id);
             
         } catch (\Exception $e) {
@@ -72,16 +106,11 @@ class KonsultasiMahasiswa extends Component
         }
     }
 
-    // 🔥 HAPUS METHOD markAsClosed - TIDAK PERLU
-
     public function render()
     {
         $query = ConsultationNote::with(['student', 'coordinator'])
-            ->where(function($q) {
-                // Koordinator hanya melihat konsultasi dari mahasiswa di kelasnya
-                $q->whereHas('student', function($studentQuery) {
-                    $studentQuery->where('class', Auth::user()->class);
-                });
+            ->whereHas('student', function($studentQuery) {
+                $studentQuery->where('class', Auth::user()->class);
             });
 
         // Filter berdasarkan status
@@ -104,7 +133,7 @@ class KonsultasiMahasiswa extends Component
         $consultations = $query->orderBy('created_at', 'desc')
             ->paginate(10);
 
-        // Statistik untuk cards - HAPUS CLOSED
+        // Statistik untuk cards
         $stats = [
             'total' => ConsultationNote::whereHas('student', function($q) {
                 $q->where('class', Auth::user()->class);
@@ -115,7 +144,6 @@ class KonsultasiMahasiswa extends Component
             'replied' => ConsultationNote::whereHas('student', function($q) {
                 $q->where('class', Auth::user()->class);
             })->where('status', 'replied')->count(),
-            // 🔥 HAPUS CLOSED COUNTER
         ];
 
         return view('livewire.koordinator.konsultasi-mahasiswa', [
