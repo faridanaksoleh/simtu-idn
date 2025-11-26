@@ -37,6 +37,11 @@ use App\Livewire\Mahasiswa\Profil as MahasiswaProfil;
 
 Route::view('/', 'welcome');
 
+// ✅ TAMBAHKAN INI - Route untuk handle Livewire update
+Route::get('/livewire/update', function () {
+    abort(404);
+});
+
 // ✅ Route utama setelah login
 Route::middleware(['auth', 'user.active'])->get('/dashboard', function () { // 🔥 TAMBAH user.active
     return redirect()->route('redirect');

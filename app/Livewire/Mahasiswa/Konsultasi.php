@@ -20,8 +20,6 @@ class Konsultasi extends Component
     public $editMessage = '';
     public $showDetailModal = false;
     public $selectedConsultation = null;
-
-    // Property untuk menyimpan ID yang akan dihapus
     public $deleteId = null;
 
     protected $rules = [
@@ -29,8 +27,12 @@ class Konsultasi extends Component
         'message' => 'required|min:10',
     ];
 
-    // Tambahkan listener untuk event delete confirmation
     protected $listeners = ['deleteConfirmed'];
+
+    // 🔥 HAPUS $queryString - INI YANG MENYEBABKAN ERROR
+    // protected $queryString = [
+    //     'page' => ['except' => 1]
+    // ];
 
     public function sendConsultation()
     {
@@ -51,10 +53,12 @@ class Konsultasi extends Component
                 'status' => 'pending',
             ]);
 
-            // 🔥 KIRIM NOTIFIKASI KE KOORDINATOR
             \App\Services\NotificationService::notifyNewConsultation($consultation);
 
             $this->reset(['subject', 'message']);
+            
+            // 🔥 RESET KE HALAMAN 1 SETELAH TAMBAH DATA BARU
+            $this->resetPage();
             
             $this->dispatch('showSuccess', [
                 'message' => 'Pertanyaan berhasil dikirim!'
@@ -131,7 +135,6 @@ class Konsultasi extends Component
 
     public function confirmDelete($consultationId)
     {
-        // Simpan ID yang akan dihapus ke property
         $this->deleteId = $consultationId;
         
         $this->dispatch('showDeleteConfirmation', [
@@ -143,7 +146,6 @@ class Konsultasi extends Component
         ]);
     }
 
-    // Method yang dipanggil ketika delete dikonfirmasi - TANPA PARAMETER
     public function deleteConfirmed()
     {
         if (!$this->deleteId) {
@@ -164,11 +166,19 @@ class Konsultasi extends Component
             }
 
             $consultation->delete();
+            
+            // 🔥 RESET KE HALAMAN 1 JIKA HALAMAN SEKARANG KOSONG SETELAH DELETE
+            $currentPage = $this->getPage();
+            $consultations = ConsultationNote::where('student_id', Auth::id())->paginate(10, ['*'], 'page', $currentPage);
+            
+            if ($consultations->count() === 0 && $currentPage > 1) {
+                $this->resetPage();
+            }
+            
             $this->dispatch('showSuccess', [
                 'message' => 'Konsultasi berhasil dihapus!'
             ]);
             
-            // Reset deleteId setelah berhasil dihapus
             $this->deleteId = null;
             
         } catch (\Exception $e) {
@@ -181,17 +191,36 @@ class Konsultasi extends Component
 
     public function showDetail($consultationId)
     {
-        $this->selectedConsultation = ConsultationNote::with(['coordinator', 'student'])
-            ->where('id', $consultationId)
-            ->where('student_id', Auth::id())
-            ->firstOrFail();
+        try {
+            $this->selectedConsultation = ConsultationNote::with(['coordinator', 'student'])
+                ->where('id', $consultationId)
+                ->where('student_id', Auth::id())
+                ->firstOrFail();
 
-        $this->showDetailModal = true;
+            $this->showDetailModal = true;
+        } catch (\Exception $e) {
+            $this->dispatch('showError', [
+                'message' => 'Gagal memuat detail konsultasi: ' . $e->getMessage()
+            ]);
+        }
     }
 
     public function closeDetail()
     {
         $this->reset(['showDetailModal', 'selectedConsultation']);
+    }
+
+    // 🔥 TAMBAHKAN METHOD UNTUK MENGATASI PAGINATION
+    public function paginationView()
+    {
+        return 'livewire::bootstrap'; // atau 'pagination::bootstrap-5'
+    }
+
+    // 🔥 METHOD UNTUK HANDLE PAGE CHANGE
+    public function updatingPage($page)
+    {
+        // Reset modal ketika pindah page
+        $this->reset(['showDetailModal', 'selectedConsultation', 'editingId']);
     }
 
     public function render()
