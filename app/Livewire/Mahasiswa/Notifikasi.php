@@ -35,6 +35,18 @@ class Notifikasi extends Component
         // Tidak ada dispatch
     }
 
+    // 🔥 PERBAIKAN: Tambahkan method untuk pagination
+    public function paginationView()
+    {
+        return 'livewire::bootstrap';
+    }
+
+    // 🔥 PERBAIKAN: Reset page ketika melakukan aksi
+    public function updatingPage($page)
+    {
+        // Reset state jika perlu
+    }
+
     public function render()
     {
         $notifications = Notification::where('user_id', Auth::id())
