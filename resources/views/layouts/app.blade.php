@@ -140,6 +140,44 @@
               }
           });
       });
+
+// 🔥 PERBAIKAN: Approve confirmation - SIMPEL seperti di Kelola User
+Livewire.on('showApproveConfirmation', (event) => {
+    Swal.fire({
+        title: 'Setujui Transaksi?',
+        text: 'Anda yakin ingin menyetujui transaksi ini?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Setujui!',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#198754',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Livewire.dispatch('approveConfirmed');
+        }
+    });
+});
+
+// 🔥 PERBAIKAN: Reject confirmation - SIMPEL seperti di Kelola User  
+Livewire.on('showRejectConfirmation', (event) => {
+    Swal.fire({
+        title: 'Tolak Transaksi?',
+        text: 'Anda yakin ingin menolak transaksi ini?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Tolak!',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        reverseButtons: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Livewire.dispatch('rejectConfirmed');
+        }
+    });
+});
   </script>
 
   @stack('scripts')

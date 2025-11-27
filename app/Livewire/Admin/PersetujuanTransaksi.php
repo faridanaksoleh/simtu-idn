@@ -12,29 +12,89 @@ class PersetujuanTransaksi extends Component
     use WithPagination;
 
     public $search = '';
+    
+    // 🔥 PERBAIKAN: Gunakan pola yang sama seperti KelolaUser & KelolaKategori
+    public $approveTransactionId = null;
+    public $rejectTransactionId = null;
 
-    public function approve($transactionId)
+    // 🔥 PERBAIKAN: Listener untuk delete confirmation (seperti komponen lain)
+    protected $listeners = [
+        'approveConfirmed' => 'performApprove',
+        'rejectConfirmed' => 'performReject'
+    ];
+
+    public function paginationView()
     {
-        $transaction = Transaction::findOrFail($transactionId);
-        $transaction->update([
-            'status' => 'approved',
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-        ]);
-
-        session()->flash('success', 'Transaksi berhasil disetujui!');
+        return 'livewire::bootstrap';
     }
 
-    public function reject($transactionId)
+    public function updatingSearch()
     {
-        $transaction = Transaction::findOrFail($transactionId);
-        $transaction->update([
-            'status' => 'rejected', 
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-        ]);
+        $this->resetPage();
+    }
 
-        session()->flash('success', 'Transaksi berhasil ditolak!');
+    // 🔥 PERBAIKAN: Method untuk konfirmasi approve - SIMPAN ID SAJA
+    public function confirmApprove($transactionId)
+    {
+        $this->approveTransactionId = $transactionId;
+        $transaction = Transaction::find($transactionId);
+        
+        $this->dispatch('showApproveConfirmation', [
+            'transactionId' => $transactionId,
+            'userName' => $transaction->user->name ?? 'User',
+            'amount' => $transaction->amount ?? 0
+        ]);
+    }
+
+    // 🔥 PERBAIKAN: Method untuk konfirmasi reject - SIMPAN ID SAJA
+    public function confirmReject($transactionId)
+    {
+        $this->rejectTransactionId = $transactionId;
+        $transaction = Transaction::find($transactionId);
+        
+        $this->dispatch('showRejectConfirmation', [
+            'transactionId' => $transactionId,
+            'userName' => $transaction->user->name ?? 'User',
+            'amount' => $transaction->amount ?? 0
+        ]);
+    }
+
+    // 🔥 PERBAIKAN: Method yang dipanggil setelah konfirmasi approve - TANPA PARAMETER
+    public function performApprove()
+    {
+        if ($this->approveTransactionId) {
+            $transaction = Transaction::findOrFail($this->approveTransactionId);
+            $transaction->update([
+                'status' => 'approved',
+                'verified_by' => Auth::id(),
+                'verified_at' => now(),
+            ]);
+
+            $this->dispatch('showSuccess', [
+                'message' => 'Transaksi berhasil disetujui!'
+            ]);
+            
+            $this->approveTransactionId = null;
+        }
+    }
+
+    // 🔥 PERBAIKAN: Method yang dipanggil setelah konfirmasi reject - TANPA PARAMETER
+    public function performReject()
+    {
+        if ($this->rejectTransactionId) {
+            $transaction = Transaction::findOrFail($this->rejectTransactionId);
+            $transaction->update([
+                'status' => 'rejected', 
+                'verified_by' => Auth::id(),
+                'verified_at' => now(),
+            ]);
+
+            $this->dispatch('showSuccess', [
+                'message' => 'Transaksi berhasil ditolak!'
+            ]);
+            
+            $this->rejectTransactionId = null;
+        }
     }
 
     public function render()
@@ -43,15 +103,12 @@ class PersetujuanTransaksi extends Component
             ->where('status', 'pending')
             ->latest();
 
-        // Search: HANYA kategori dan amount
         if ($this->search) {
             $query->where(function($q) {
-                // CARI KATEGORI
                 $q->whereHas('category', function($categoryQuery) {
                     $categoryQuery->where('name', 'like', "%{$this->search}%");
                 });
                 
-                // CARI JUMLAH (partial number match)
                 $numericSearch = preg_replace('/[^0-9]/', '', $this->search);
                 if (!empty($numericSearch)) {
                     $q->orWhereRaw('ABS(amount) LIKE ?', ["%{$numericSearch}%"]);
