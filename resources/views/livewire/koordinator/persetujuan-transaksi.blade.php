@@ -114,20 +114,18 @@
                                 </td>
                                 <td class="pe-4">
                                     <div class="d-flex gap-2">
-                                        <!-- Button Approve dengan outline -->
+                                        <!-- 🔥 PERBAIKAN: Ganti wire:click ke confirmApprove dan HAPUS wire:confirm -->
                                         <button class="btn btn-outline-success btn-sm d-flex align-items-center px-3" 
-                                                wire:click="approve({{ $trx->id }})"
-                                                wire:confirm="Setujui transaksi ini?"
+                                                wire:click="confirmApprove({{ $trx->id }})"
                                                 title="Approve"
                                                 onmouseover="this.classList.add('btn-success', 'text-white'); this.classList.remove('btn-outline-success')"
                                                 onmouseout="this.classList.remove('btn-success', 'text-white'); this.classList.add('btn-outline-success')">
                                             <i class="bi bi-check-lg me-1"></i>Approve
                                         </button>
                                         
-                                        <!-- Button Reject dengan outline -->
+                                        <!-- 🔥 PERBAIKAN: Ganti wire:click ke confirmReject dan HAPUS wire:confirm -->
                                         <button class="btn btn-outline-danger btn-sm d-flex align-items-center px-3" 
-                                                wire:click="reject({{ $trx->id }})"
-                                                wire:confirm="Tolak transaksi ini?"
+                                                wire:click="confirmReject({{ $trx->id }})"
                                                 title="Reject"
                                                 onmouseover="this.classList.add('btn-danger', 'text-white'); this.classList.remove('btn-outline-danger')"
                                                 onmouseout="this.classList.remove('btn-danger', 'text-white'); this.classList.add('btn-outline-danger')">

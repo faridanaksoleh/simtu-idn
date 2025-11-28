@@ -13,8 +13,17 @@ class PersetujuanTransaksi extends Component
 
     public $search = '';
     public $kelasBimbingan;
+    
+    // 🔥 PERBAIKAN: Tambahkan property untuk SweetAlert2
+    public $approveTransactionId = null;
+    public $rejectTransactionId = null;
 
-    // 🔥 TAMBAHKAN: Method untuk pagination
+    // 🔥 PERBAIKAN: Tambahkan listener untuk SweetAlert2
+    protected $listeners = [
+        'approveConfirmed' => 'performApprove',
+        'rejectConfirmed' => 'performReject'
+    ];
+
     public function paginationView()
     {
         return 'livewire::bootstrap';
@@ -40,49 +49,91 @@ class PersetujuanTransaksi extends Component
         }
     }
 
-    public function approve($transactionId)
+    // 🔥 PERBAIKAN: Method untuk konfirmasi approve
+    public function confirmApprove($transactionId)
     {
-        $transaction = Transaction::findOrFail($transactionId);
+        $this->approveTransactionId = $transactionId;
+        $transaction = Transaction::find($transactionId);
         
-        if ($transaction->user->class !== $this->kelasBimbingan) {
-            $this->dispatch('showError', [
-                'message' => 'Anda tidak memiliki akses untuk menyetujui transaksi ini!'
-            ]);
-            return;
-        }
-
-        $transaction->update([
-            'status' => 'approved',
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-        ]);
-
-        $this->dispatch('showSuccess', [
-            'message' => 'Transaksi berhasil disetujui!'
+        $this->dispatch('showApproveConfirmation', [
+            'transactionId' => $transactionId,
+            'userName' => $transaction->user->name ?? 'Mahasiswa',
+            'amount' => $transaction->amount ?? 0,
+            'class' => $transaction->user->class ?? '-'
         ]);
     }
 
-    public function reject($transactionId)
+    // 🔥 PERBAIKAN: Method untuk konfirmasi reject
+    public function confirmReject($transactionId)
     {
-        $transaction = Transaction::findOrFail($transactionId);
+        $this->rejectTransactionId = $transactionId;
+        $transaction = Transaction::find($transactionId);
         
-        if ($transaction->user->class !== $this->kelasBimbingan) {
-            $this->dispatch('showError', [
-                'message' => 'Anda tidak memiliki akses untuk menolak transaksi ini!'
-            ]);
-            return;
-        }
-
-        $transaction->update([
-            'status' => 'rejected', 
-            'verified_by' => Auth::id(),
-            'verified_at' => now(),
-        ]);
-
-        $this->dispatch('showSuccess', [
-            'message' => 'Transaksi berhasil ditolak!'
+        $this->dispatch('showRejectConfirmation', [
+            'transactionId' => $transactionId,
+            'userName' => $transaction->user->name ?? 'Mahasiswa',
+            'amount' => $transaction->amount ?? 0,
+            'class' => $transaction->user->class ?? '-'
         ]);
     }
+
+    // 🔥 PERBAIKAN: Method yang dipanggil setelah konfirmasi approve
+    public function performApprove()
+    {
+        if ($this->approveTransactionId) {
+            $transaction = Transaction::findOrFail($this->approveTransactionId);
+            
+            if ($transaction->user->class !== $this->kelasBimbingan) {
+                $this->dispatch('showError', [
+                    'message' => 'Anda tidak memiliki akses untuk menyetujui transaksi ini!'
+                ]);
+                return;
+            }
+
+            $transaction->update([
+                'status' => 'approved',
+                'verified_by' => Auth::id(),
+                'verified_at' => now(),
+            ]);
+
+            $this->dispatch('showSuccess', [
+                'message' => 'Transaksi berhasil disetujui!'
+            ]);
+            
+            $this->approveTransactionId = null;
+        }
+    }
+
+    // 🔥 PERBAIKAN: Method yang dipanggil setelah konfirmasi reject
+    public function performReject()
+    {
+        if ($this->rejectTransactionId) {
+            $transaction = Transaction::findOrFail($this->rejectTransactionId);
+            
+            if ($transaction->user->class !== $this->kelasBimbingan) {
+                $this->dispatch('showError', [
+                    'message' => 'Anda tidak memiliki akses untuk menolak transaksi ini!'
+                ]);
+                return;
+            }
+
+            $transaction->update([
+                'status' => 'rejected', 
+                'verified_by' => Auth::id(),
+                'verified_at' => now(),
+            ]);
+
+            $this->dispatch('showSuccess', [
+                'message' => 'Transaksi berhasil ditolak!'
+            ]);
+            
+            $this->rejectTransactionId = null;
+        }
+    }
+
+    // 🔥 PERBAIKAN: Hapus method approve dan reject lama
+    // public function approve($transactionId) { ... }
+    // public function reject($transactionId) { ... }
 
     public function render()
     {
