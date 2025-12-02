@@ -1,61 +1,133 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+```markdown
+# 🕌 SIMTU - Sistem Monitoring Tabungan Umrah Mahasiswa
+**Aplikasi Manajemen Tabungan Umrah Berbasis Web untuk Politeknik IDN**
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi berbasis web untuk membantu mahasiswa Politeknik IDN dalam mengelola tabungan Umrah secara terstruktur, transparan, dan terintegrasi.
 
-## About Laravel
+## ✨ Fitur Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### 👥 Manajemen Pengguna
+- Autentikasi Multi-Role (Admin, Koordinator, Mahasiswa)
+- Manajemen Profil Pengguna
+- Hak Akses Berdasarkan Role
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 💰 Manajemen Transaksi
+- Pencatatan Transaksi Setoran
+- Upload Bukti Pembayaran
+- Approval/Reject Transaksi oleh Admin
+- Riwayat Transaksi dengan Filter & Pencarian
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### 🎯 Target Tabungan
+- Target Tabungan Personal
+- Progress Otomatis dengan Visualisasi
+- Pengingat Target
 
-## Learning Laravel
+### 📊 Dashboard & Laporan
+- Dashboard Statistik & Grafik (ApexCharts)
+- Export Laporan ke PDF/Excel
+- Notifikasi Sistem
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## 🛠️ Teknologi Stack
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+| Kategori | Teknologi | Versi |
+|----------|-----------|-------|
+| **Backend** | Laravel | 12 |
+| **Frontend** | Livewire | 3 |
+| **UI/UX** | Bootstrap 5 + NiceAdmin | - |
+| **Database** | MySQL | 5.7+ |
+| **Visualisasi** | ApexCharts | - |
+| **Development** | PHP | 8.2+ |
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Instalasi & Setup
 
-## Laravel Sponsors
+### Prasyarat
+- PHP 8.2+
+- Composer
+- MySQL 5.7+
+- Node.js 18+
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Langkah Instalasi
 
-### Premium Partners
+1. **Clone Repository**
+   ```bash
+   git clone https://github.com/faridanaksoleh/simtu-idn.git
+   cd simtu-idn
+   ```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+2. **Install Dependencies**
+   ```bash
+   composer install
+   npm install
+   ```
 
-## Contributing
+3. **Konfigurasi Environment**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit file `.env` dan sesuaikan:
+   ```env
+   DB_DATABASE=simtu-idn
+   DB_USERNAME=root
+   DB_PASSWORD=
+   ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+4. **Generate Key & Database**
+   ```bash
+   php artisan key:generate
+   php artisan migrate --seed
+   ```
 
-## Code of Conduct
+5. **Jalankan Server**
+   ```bash
+   php artisan serve
+   ```
+   Akses: **http://localhost:8000**
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 📁 Struktur Proyek
+```
+simtu-idn/
+├── app/
+│   ├── Http/Controllers/
+│   ├── Livewire/
+│   ├── Models/
+│   └── View/Components/
+├── database/
+│   ├── migrations/
+│   └── seeders/
+├── resources/
+│   ├── views/
+│   └── css/js/
+└── public/
+```
 
-## Security Vulnerabilities
+## 🧪 Testing
+```bash
+php artisan test
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🚀 Deployment (Production)
+1. Set `APP_ENV=production` dan `APP_DEBUG=false` di `.env`
+2. `php artisan optimize`
+3. `php artisan config:clear`
 
-## License
+## 🤝 Berkontribusi
+1. Fork repository
+2. Buat branch baru (`git checkout -b feature/NamaFitur`)
+3. Commit perubahan (`git commit -m 'Tambahkan fitur'`)
+4. Push ke branch (`git push origin feature/NamaFitur`)
+5. Buat Pull Request
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📚 Dokumentasi
+- [Laravel Docs](https://laravel.com/docs)
+- [Livewire Docs](https://livewire.laravel.com/docs)
+- [Bootstrap 5 Docs](https://getbootstrap.com/docs/5.0)
+- [ApexCharts Docs](https://apexcharts.com/docs)
+
+## 📄 Lisensi
+MIT License
+
+## 👥 Kontak
+- **Developer**: Muhamad Faridz Akhsan
+- **Email**: itspuyd@gmail.com
+- **Institusi**: Politeknik IDN
+```
